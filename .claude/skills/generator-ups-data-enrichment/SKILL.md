@@ -71,6 +71,10 @@ If the Qualified Leads tab doesn't yet have a header row matching the Market Map
 
 Daniel wants this sheet "neatly formatted, well presented and easy to read" — not just correct. Use `sheets_api.sh format` (wraps the general `spreadsheets.batchUpdate` endpoint) to apply standard presentation once per sheet if it isn't already there: bold + frozen header row, sensible column widths, and consider light row banding for readability on a sheet this long. Formatting is a one-time/idempotent housekeeping step, not something to redo every batch — check with `sheets_api.sh meta` first if you're unsure whether it's already applied.
 
+### 9. Hand off to verification, every time
+
+Once a batch is written and verified-readable, invoke the `generator-ups-data-verification` Skill on that same batch before moving on. This isn't optional or occasional — Daniel wants every batch checked, not a sample, so the accuracy tracking it produces (see that Skill's scoring section) reflects the whole pipeline, not a cherry-picked slice.
+
 ## Not this skill's job
 
 Finding brand-new companies to add to the sheet (a separate skill, built to cover that side of the pipeline). Independent verification/QA of data already on the sheet — that's `sourcing-verifier`. Deciding sub-sector scope changes. Drafting outreach. Valuation. Anything touching legal or financial commitments. If you hit one of these, hand it back to Athena rather than doing it yourself.
