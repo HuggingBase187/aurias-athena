@@ -23,7 +23,9 @@ Only these 7 categories: UPS, critical power services, backup generators, transf
 
 ## The workflow
 
-### 1. Pick up where the sheet leaves off
+### 1. Check the batch lock, then pick up where the sheet leaves off
+
+**Added 2026-09-18, needed once batches started running unattended overnight:** before doing anything else, read `Automation Status!A2:C2` on the master sheet. If Status (column B) is `FREE`, you're clear — write `IN_PROGRESS since <ISO timestamp>, rows <range>` into it immediately, before you start researching, so a scheduled task or another dispatch can't start the same batch in parallel. If Status already shows `IN_PROGRESS`, **stop — don't start a batch.** Report back that a batch is already running rather than duplicating work or racing another agent on the same rows. Set it back to `FREE` as the very last thing you do, after the batch is written, verified, and handed off — not before. If you ever hit an unrecoverable error mid-batch, still set it back to `FREE` before stopping, so the lock doesn't jam the pipeline for whoever runs next.
 
 Read the Market Map tab's Company Name and Website columns (via `sheets_api.sh read`) to find rows that have a name but are still missing the rest of the template — that's your queue. Don't re-enrich a row that's already been filled in and given a Screening Verdict; that's the verifier's job to check, not yours to redo.
 
@@ -73,9 +75,11 @@ Use `sheets_api.sh batch` to write all 5 rows in one atomic call rather than 5 s
 
 Apply the 30–100 headcount sizing band from `references/data-template.md` to help decide the Screening Verdict. This is a triage aid, not the only input — check Ultimate Owner too, since a large group figure can mask a right-sized subsidiary.
 
+**Headcount is a proxy for the real target, PBT/Revenue — not a co-equal signal (Daniel, 2026-09-18): "number of employees is a proxy for revenue and PBT."** Where PBT/Revenue are actually disclosed, that's the governing figure; headcount is what you fall back on when the financials aren't disclosed (common for the smallest private companies). If both are available and genuinely conflict, go with the financial figure. See "What we're actually screening for" in `references/data-template.md` for the full reasoning.
+
 **Before disqualifying a near-miss on headcount (roughly 20-29), check how old the Companies House figure actually is** (added 2026-09-18, see "Stale Companies House headcount near the 30-employee floor" in `references/data-template.md`) — use the accounts' period-end date, not the filing date. If it's more than 12 months old, don't disqualify on it: set Screening Verdict to "Needs more info" and copy the row to Flagged to You instead, same as the PBT/ownership flag below.
 
-**As of 2026-09-18, headcount isn't the only route to qualifying.** Also check Profit Before Tax (column N) against the "Financial performance signals" section of `references/data-template.md` — a PBT of £1m-£10m qualifies a company independently of headcount, unless it's PE/large-group owned, in which case that goes to Daniel as a flag rather than an automatic call. Revenue between £10m-£50m gets its own Notes flag for Daniel regardless of what else the row shows. Neither of these financial checks is optional just because headcount already gave you a clean verdict — run both checks on every company, every time.
+**As of 2026-09-18, headcount isn't the only route to qualifying — and it's not even the primary one.** Also check Profit Before Tax (column N) against the "Financial performance signals" section of `references/data-template.md` — a PBT of £1m-£10m qualifies a company independently of headcount, unless it's PE/large-group owned, in which case that goes to Daniel as a flag rather than an automatic call. **A PBT near-miss (roughly £700k-£1m) never gets a flat Out-of-scope-on-PBT verdict either — it goes to "Needs more info" + Flagged to You, regardless of whether the accounts are fresh or stale** (Daniel, 2026-09-18: "no harm in approaching companies that are near misses... we do not lose anything"). Revenue between £10m-£50m gets its own Notes flag for Daniel regardless of what else the row shows. None of these financial checks is optional just because headcount already gave you a clean verdict — run all of them on every company, every time, and if headcount and a disclosed financial figure ever disagree, the financial figure governs (headcount is only ever a proxy for it).
 
 ### 7. Qualified leads get copied, not moved — and so does anything flagged for Daniel
 
