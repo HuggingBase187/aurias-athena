@@ -74,19 +74,23 @@ Apply the 30–100 headcount sizing band from `references/data-template.md` to h
 
 **As of 2026-09-18, headcount isn't the only route to qualifying.** Also check Profit Before Tax (column N) against the "Financial performance signals" section of `references/data-template.md` — a PBT of £1m-£10m qualifies a company independently of headcount, unless it's PE/large-group owned, in which case that goes to Daniel as a flag rather than an automatic call. Revenue between £10m-£50m gets its own Notes flag for Daniel regardless of what else the row shows. Neither of these financial checks is optional just because headcount already gave you a clean verdict — run both checks on every company, every time.
 
-### 7. Qualified leads get copied, not moved
+### 7. Qualified leads get copied, not moved — and so does anything flagged for Daniel
 
 If a company's Screening Verdict comes out In-scope via **either** the headcount path or the PBT path (see step 6 and `references/data-template.md`), use `sheets_api.sh append` to add the same row to the **Qualified Leads** tab. The row on Market Map stays exactly as it is — this is a copy for visibility, not a move. Everyone stays mapped, per the existing "map the whole market" rule; Qualified Leads is just the shortlist view on top of it.
 
-If the Qualified Leads tab doesn't yet have a header row matching the Market Map columns, add one first (same 29 columns, same order) so the two tabs stay directly comparable.
+**Added 2026-09-18:** the same copy-not-move pattern applies to a Screening Verdict of "Needs more info" — the case where a company qualifies on one path (usually PBT) but sits inside a PE/large-group ownership structure, so the call is Daniel's rather than automatic (see the "Financial performance signals" section of `references/data-template.md`). Copy that row to the **Flagged to You** tab the same way. Daniel reviews rows there and will move or reclassify them himself once he's decided — this skill's job stops at flagging, not deciding.
+
+If the Qualified Leads or Flagged to You tab doesn't yet have a header row matching the Market Map columns, add one first (same 30 columns, same order) so all tabs stay directly comparable.
 
 ### 8. Keep the sheet readable
 
 Daniel wants this sheet "neatly formatted, well presented and easy to read" — not just correct. Use `sheets_api.sh format` (wraps the general `spreadsheets.batchUpdate` endpoint) to apply standard presentation once per sheet if it isn't already there: bold + frozen header row, sensible column widths, and consider light row banding for readability on a sheet this long. Formatting is a one-time/idempotent housekeeping step, not something to redo every batch — check with `sheets_api.sh meta` first if you're unsure whether it's already applied.
 
-### 9. Hand off to verification, every time
+### 9. Hand off to verification, every time — as a genuinely separate agent
 
-Once a batch is written and verified-readable, invoke the `generator-ups-data-verification` Skill on that same batch before moving on. This isn't optional or occasional — Daniel wants every batch checked, not a sample, so the accuracy tracking it produces (see that Skill's scoring section) reflects the whole pipeline, not a cherry-picked slice.
+Once a batch is written and verified-readable, hand off to verification by spawning the **`sourcing-verifier` subagent** (via the Agent tool, `subagent_type: "sourcing-verifier"`) and telling it to run the `generator-ups-data-verification` Skill against this batch. This isn't optional or occasional — Daniel wants every batch checked, not a sample, so the accuracy tracking it produces (see that Skill's scoring section) reflects the whole pipeline, not a cherry-picked slice.
+
+**Use the subagent, don't just load the verification Skill inline in your own context (corrected 2026-09-18).** The verification Skill's "no Edit access by design" boundary only means something if it's actually enforced — and `sourcing-verifier`'s own tool grant genuinely has no Edit or Bash tool, so a verifier running as that subagent physically cannot write to the sheet, whereas you (the enrichment agent) can. The first real batch through this pipeline (2026-09-17/18) showed why this matters: verification found two Notes-column misses and corrected them itself rather than just flagging them, because it was running inline in an agent context that still had full Edit/Bash access — the written rule didn't stop it, since nothing was actually enforcing it. Route through the subagent so the boundary is structural, not just a line in a file.
 
 ## Not this skill's job
 
