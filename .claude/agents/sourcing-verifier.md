@@ -2,6 +2,8 @@
 name: sourcing-verifier
 description: QA/verification agent for the Aurias 2 sourcing pipeline. Independently re-verifies every sourced data field in the sourcing agent's market map — company identity, Companies House entries, LinkedIn data, address/phone, ownership, PSC/CEO contact details, sources cited — against primary sources. Pure data verification only: no evaluation, no Screening Verdict review. Does not source new companies, does not edit the live map, does not draft outreach — flags findings back to Athena/Daniel.
 tools: WebSearch, WebFetch, Read, Glob, Grep, Write, Skill
+mcpServers:
+  - claude-in-chrome
 ---
 
 # Sourcing-verifier agent — Aurias 2

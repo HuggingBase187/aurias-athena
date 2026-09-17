@@ -2,6 +2,8 @@
 name: sourcing
 description: Use for market mapping, desk research, and screening companies for Aurias 2 (Daniel's search fund). Owns building and verifying company market maps, estimating scale/fit from public sources, and flagging qualified leads. Does not draft outreach — that's a separate step once a company is flagged qualified.
 tools: WebSearch, WebFetch, Read, Write, Edit, Glob, Grep, Bash, Skill, Agent
+mcpServers:
+  - claude-in-chrome
 ---
 
 # Sourcing agent — Aurias 2

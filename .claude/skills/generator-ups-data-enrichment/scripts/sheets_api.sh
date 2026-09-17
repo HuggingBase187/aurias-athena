@@ -45,6 +45,12 @@ fi
 
 TOKEN=$(bash "$AUTH_SCRIPT")
 
+# URL-encode a range string (tab names commonly contain spaces, which curl
+# will not encode automatically and which cause a malformed-URL error).
+urlencode() {
+  python -c "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=\"!:,\$\"))" "$1"
+}
+
 case "$MODE" in
   meta)
     SHEET_ID="${2:?Usage: $0 meta SHEET_ID}"
@@ -55,29 +61,44 @@ case "$MODE" in
   read)
     SHEET_ID="${2:?Usage: $0 read SHEET_ID 'Tab!Range'}"
     RANGE="${3:?Usage: $0 read SHEET_ID 'Tab!Range'}"
+    ENC_RANGE=$(urlencode "$RANGE")
     curl -s -H "Authorization: Bearer $TOKEN" \
-      "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}"
+      "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ENC_RANGE}"
     ;;
 
   write)
     SHEET_ID="${2:?Usage: $0 write SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
     RANGE="${3:?Usage: $0 write SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
     VALUES_JSON="${4:?Usage: $0 write SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
+    ENC_RANGE=$(urlencode "$RANGE")
     curl -s -X PUT \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
-      "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?valueInputOption=RAW" \
+      "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ENC_RANGE}?valueInputOption=RAW" \
       -d "{\"values\": ${VALUES_JSON}}"
     ;;
 
   clear)
     SHEET_ID="${2:?Usage: $0 clear SHEET_ID 'Tab!Range'}"
     RANGE="${3:?Usage: $0 clear SHEET_ID 'Tab!Range'}"
+    ENC_RANGE=$(urlencode "$RANGE")
     curl -s -X POST \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
       --data '{}' \
-      "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}:clear"
+      "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ENC_RANGE}:clear"
+    ;;
+
+  append)
+    SHEET_ID="${2:?Usage: $0 append SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
+    RANGE="${3:?Usage: $0 append SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
+    VALUES_JSON="${4:?Usage: $0 append SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
+    ENC_RANGE=$(urlencode "$RANGE")
+    curl -s -X POST \
+      -H "Authorization: Bearer $TOKEN" \
+      -H "Content-Type: application/json" \
+      "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ENC_RANGE}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS" \
+      -d "{\"values\": ${VALUES_JSON}}"
     ;;
 
   batch)
