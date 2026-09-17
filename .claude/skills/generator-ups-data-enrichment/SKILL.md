@@ -27,6 +27,10 @@ Only these 7 categories: UPS, critical power services, backup generators, transf
 
 Read the Market Map tab's Company Name and Website columns (via `sheets_api.sh read`) to find rows that have a name but are still missing the rest of the template — that's your queue. Don't re-enrich a row that's already been filled in and given a Screening Verdict; that's the verifier's job to check, not yours to redo.
 
+### 1a. Count before you touch anything
+
+Before writing, count the total non-blank rows in the Company Name column and note it. After writing the batch, count again. **The count should only ever stay the same or grow — never shrink.** A shrinking count means rows were lost somewhere, even if the batch you meant to write looks fine on a read-back. This is the cheapest possible check against the exact failure described in step 5 below, so don't skip it because it feels redundant with the read-back verification.
+
 ### 2. Work in batches of 5
 
 Take five companies at a time, fully research and verify all of them, write that batch to the sheet, then move to the next five. This isn't a formality — Daniel asked for it specifically because long, unbroken research runs are exactly where an agent's accuracy tends to drift (this was raised directly when we researched why a Claude agent might "hallucinate after a small number of accurate results" — the fix isn't a different tool, it's disciplined batching and verification, which is what this whole workflow is built around). Five is small enough to genuinely fact-check each one, not so small that progress crawls.
@@ -57,6 +61,8 @@ Keep the verification and the actual sheet write centralized in you, the orchest
 ### 5. Write the batch
 
 Use `sheets_api.sh batch` to write all 5 rows in one atomic call rather than 5 separate writes — this is exactly what the script's `batch` mode wraps. Always read the affected range back afterward to confirm the write landed as expected before moving to the next batch.
+
+**Before writing, record the exact row number for each company you're about to update** (not just its name) — read the Company Name in that row and confirm it matches before you write anything into it. **A real incident (2026-09-17):** a re-run of an already-enriched batch ended up writing its results to a *different* set of rows than the ones it read from, which both duplicated one company and silently deleted two entirely unrelated ones further down the sheet (their rows got overwritten). This went undetected until Daniel spot-checked cells directly, well after the batch was reported as complete and verified. Reading a cell back after writing only proves the write landed *somewhere* correct — it doesn't prove nothing else shifted or got clobbered. If you insert, delete, or otherwise restructure rows for any reason during a batch, re-run the row-count and duplicate-name checks below before considering the batch finished, not just a read-back of the cells you meant to touch.
 
 ### 6. Triage with the headcount heuristic
 
