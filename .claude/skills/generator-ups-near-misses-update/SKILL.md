@@ -24,6 +24,15 @@ Monthly, at month-end, via the scheduled task `generator-ups-near-misses-monthly
 
 ## The workflow
 
+### 0. Check whether the Near Miss Rules doc changed — this can trigger a full resweep, not just the routine one
+
+**Added 2026-09-18 (Daniel: "when I change the numbers in the document it should apply retroactively and trigger a review of companies that may fall within the new bandings... especially relevant when lowering the bottom band").** Read `Automation Status!A3:C3` for the last-seen `modifiedTime` of the Near Miss Rules Google Doc (`1C6BGckrgU-5j7MPfMriWdw_3pPuqqAPg3Q8oYsc9_Wg`). Compare it against the doc's actual current `modifiedTime` (Drive file metadata).
+
+- **If unchanged**, proceed with the routine sweep below exactly as normal (near-miss set built from the current bands, gated behind AE as usual).
+- **If the doc has changed**, this is a **full backlog resweep**, not the routine monthly one: re-check **every currently Out-of-scope row on the Market Map** against the *new* bands read fresh from the doc — not just rows that were already near-misses under the old bands. A row that wasn't close enough to matter under the old numbers can become a genuine near-miss under a lowered floor (Daniel's own example: lowering the PBT floor pulls in rows that were previously well clear of it). This resweep doesn't wait for AE due dates the way the routine sweep does for *new* data — you're not waiting for anything new to exist, you're re-applying updated rules to figures you already have, so check every row's already-recorded K/M/N figures against the new bands immediately. Only fall through to an actual Companies House re-pull (steps 2-3 below) for rows where the *routine* staleness/newly-disclosed logic would separately apply.
+- After the resweep completes (routine or full), **update `Automation Status!B3` to the doc's current `modifiedTime`** so the next run doesn't redo a full resweep unnecessarily.
+- Log a full resweep distinctly in the Near-Miss Review Log's Details column (e.g. "Full resweep triggered by Near Miss Rules doc change — bands now X/Y/Z") so it's clearly distinguishable from a routine month-end run.
+
 ### 1. Find the near-miss set
 
 **Read this carefully — headcount and the financial figures (PBT/Revenue) now work differently (updated 2026-09-18).** Since that date, the enrichment Skill itself catches a PBT near-miss (£700k-£1m) immediately, unconditionally, at write time — it never waits for this monthly sweep (Daniel: "no harm in approaching companies that are near misses... we do not lose anything"). So this Skill's PBT/Revenue role going forward is narrower than headcount's:
