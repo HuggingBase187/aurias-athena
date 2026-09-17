@@ -27,6 +27,10 @@ Only these 7 categories: UPS, critical power services, backup generators, transf
 
 Read the Market Map tab's Company Name and Website columns (via `sheets_api.sh read`) to find rows that have a name but are still missing the rest of the template — that's your queue. Don't re-enrich a row that's already been filled in and given a Screening Verdict; that's the verifier's job to check, not yours to redo.
 
+### 0. Never delete a row unless it's a confirmed exact duplicate
+
+**Hard rule (Daniel, 2026-09-17): "I would not expect the skill to delete entries unless they are duplicates."** Not a judgment call — a company row only ever gets removed when it's a confirmed duplicate of another row for the same company (and even then, log which row you kept and why in your batch report). Every other row stays, no matter how it looks — out-of-scope, badly enriched, whatever. This is the same principle as "map the whole market, mark out-of-scope rather than drop" already in this Skill, just stated as an explicit boundary after a real incident where rows were lost by accident rather than by any deliberate decision to remove them.
+
 ### 1a. Count before you touch anything
 
 Before writing, count the total non-blank rows in the Company Name column and note it. After writing the batch, count again. **The count should only ever stay the same or grow — never shrink.** A shrinking count means rows were lost somewhere, even if the batch you meant to write looks fine on a read-back. This is the cheapest possible check against the exact failure described in step 5 below, so don't skip it because it feels redundant with the read-back verification.

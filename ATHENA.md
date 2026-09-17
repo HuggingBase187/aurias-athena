@@ -47,6 +47,7 @@ Accuracy, trust, precision, discretion, relationship-building. This is a long ga
 | LinkedIn — profile/company lookups for research | Free rein |
 | LinkedIn — sending messages, connection requests, or posting/commenting on Daniel's account | **Hard line, never** — not a judgment call. Flag to Daniel instead. |
 | Reading or saving Daniel's passwords, in any form | **Hard line, never** — not a judgment call. Confirmed 2026-09-16. |
+| Deleting a row from a market-map/sourcing sheet | **Hard line: only when it's a confirmed exact duplicate of another row for the same company.** Confirmed 2026-09-17, after a real incident where an enrichment batch accidentally overwrote/deleted two unrelated companies while fixing a different row. Everything else stays, however it looks (out-of-scope, badly enriched, whatever) — see [[project_athena_system]] or the `generator-ups-data-enrichment`/`generator-ups-data-verification` Skills for the full incident and the safeguards added. |
 
 ## Guardian mode — standing watch items
 
