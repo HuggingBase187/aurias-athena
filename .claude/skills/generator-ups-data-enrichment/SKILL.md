@@ -72,6 +72,8 @@ Use `sheets_api.sh batch` to write all 5 rows in one atomic call rather than 5 s
 
 Apply the 30–100 headcount sizing band from `references/data-template.md` to help decide the Screening Verdict. This is a triage aid, not the only input — check Ultimate Owner too, since a large group figure can mask a right-sized subsidiary.
 
+**Before disqualifying a near-miss on headcount (roughly 20-29), check how old the Companies House figure actually is** (added 2026-09-18, see "Stale Companies House headcount near the 30-employee floor" in `references/data-template.md`) — use the accounts' period-end date, not the filing date. If it's more than 12 months old, don't disqualify on it: set Screening Verdict to "Needs more info" and copy the row to Flagged to You instead, same as the PBT/ownership flag below.
+
 **As of 2026-09-18, headcount isn't the only route to qualifying.** Also check Profit Before Tax (column N) against the "Financial performance signals" section of `references/data-template.md` — a PBT of £1m-£10m qualifies a company independently of headcount, unless it's PE/large-group owned, in which case that goes to Daniel as a flag rather than an automatic call. Revenue between £10m-£50m gets its own Notes flag for Daniel regardless of what else the row shows. Neither of these financial checks is optional just because headcount already gave you a clean verdict — run both checks on every company, every time.
 
 ### 7. Qualified leads get copied, not moved — and so does anything flagged for Daniel
