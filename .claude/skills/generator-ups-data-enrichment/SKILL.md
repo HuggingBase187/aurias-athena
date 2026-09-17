@@ -39,9 +39,10 @@ Default sources, in the order they're normally most reliable for this market: **
 
 Fill in every field per `references/data-template.md`. Three fields have specific formatting rules worth restating here because they're easy to default into a lazier shorthand:
 
+- **Employees - Companies House (K)** — added 2026-09-17: pull the "average number of employees" note from the filed accounts for every company, not just when LinkedIn is ambiguous. It's the anchor headcount signal alongside Associated Members (J) — use whichever of the two (plus the LinkedIn band) is largest, per `references/data-template.md`'s sizing heuristic.
 - **Equipment Category (H)** — every category the company genuinely offers, not just the headline one.
-- **Key OEM Partnerships (W)** — paired to the category it belongs to, e.g. `Generator - Cummins, Perkins; Load bank - Crestchic`.
-- **Type-Spec / Resale-Rental-Service (X)** — each applicable one spelled out individually, never "all" or "both".
+- **Key OEM Partnerships (X)** — paired to the category it belongs to, e.g. `Generator - Cummins, Perkins; Load bank - Crestchic`.
+- **Type-Spec / Resale-Rental-Service (Y)** — each applicable one spelled out individually, never "all" or "both".
 
 And the two rules that protect against the most damaging kind of wrong answer:
 - **PSC must resolve to a named human being**, chased up the ownership chain as far as it takes (`references/data-template.md` has the full procedure and worked examples).

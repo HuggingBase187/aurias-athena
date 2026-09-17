@@ -26,6 +26,7 @@ Every non-blank field the batch just wrote, against primary sources — same sco
 1. **Company identity** — the row is the real, correctly-matched entity, not a similarly-named different company.
 2. **Companies House data** — pull the company by its recorded number and confirm legal name, active status, PSC register match, and that recorded Revenue/PBT actually appear in the filed accounts (or the cited press release actually states them).
 3. **LinkedIn data** — reload the company's LinkedIn page via Claude-in-Chrome and confirm Company Size band, Associated Members count, and that the Company LinkedIn URL points to the right company.
+3a. **Employees - Companies House (added 2026-09-17)** — pull the filed accounts and confirm the recorded "average number of employees" figure actually matches the note cited. This is now the anchor headcount signal alongside Associated Members — check that the enrichment Skill used the *largest* of the collected signals as its working headcount for the Screening Verdict, not just whichever it found first.
 4. **Ownership and people** — Ultimate Owner, PSC Name/LinkedIn/Email/Phone, CEO/MD Name/LinkedIn/Email/Phone all check out against Companies House (PSC) and LinkedIn/the company site respectively. For a PSC chain, confirm it was actually chased to a natural person (or a documented public/PE terminus) rather than stopped early.
 5. **Sources column** — each cited source actually supports the fact it's attached to.
 
