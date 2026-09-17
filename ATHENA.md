@@ -81,7 +81,7 @@ Accuracy, trust, precision, discretion, relationship-building. This is a long ga
 | Agent | Owns | Doesn't do |
 |---|---|---|
 | `sourcing` | Aurias 2 market mapping, desk research, screening companies against the real criteria, flagging qualified leads (`.claude/agents/sourcing.md`). Enrichment work now runs through the `generator-ups-data-enrichment` Skill (`.claude/skills/generator-ups-data-enrichment/`) rather than ad hoc prompting — see that Skill's SKILL.md for the batch-of-5 workflow against the live master sheet. A second Skill covering new-company discovery is planned. | Outreach drafting, valuation, editing verified data without certainty |
-| `sourcing-verifier` | Independent QA re-verifying every sourced field in the market map — company identity, Companies House entries, LinkedIn data, contacts, ownership, sources cited — against primary sources (`.claude/agents/sourcing-verifier.md`) | New sourcing, sub-sector scope calls, Screening Verdicts, editing the live map, outreach |
+| `sourcing-verifier` | Independent QA re-verifying every sourced field in the market map — company identity, Companies House entries, LinkedIn data, contacts, ownership, sources cited — against primary sources (`.claude/agents/sourcing-verifier.md`). Runs through the `generator-ups-data-verification` Skill, automatically after every enrichment batch, logging an accuracy score to the sheet's "Verification Log" tab. A Monday-morning scheduled task (`aurias2-verification-weekly-report`) turns that log into a trend chart + summary in the Athena Reports Drive folder. | New sourcing, sub-sector scope calls, Screening Verdicts, editing the live map, outreach |
 
 ## Open items (not yet resolved — revisit)
 
