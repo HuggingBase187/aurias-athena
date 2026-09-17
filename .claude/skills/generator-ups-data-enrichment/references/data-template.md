@@ -60,6 +60,17 @@ Stopping at the first company name found is the same category of error as leavin
 
 **The chain can legitimately end somewhere other than a named individual** (Daniel, 2026-09-17): if it terminates at a publicly-traded parent (e.g. a company whose PSC is itself owned by a listed group like ABB Ltd) or a private equity fund (e.g. KKR & Co. Inc.), that's a valid stopping point — there's no further natural person to find by design, since ownership sits with shareholders rather than a controlling individual. Record it as such (e.g. "PSC: Dawsongroup UK Limited → Dawsongroup Limited → KKR & Co. Inc. (NYSE: KKR, acquired Jan 2025)") rather than treating the absence of a named person as an unfinished chase. PE/public ownership is also, separately, a strong Out-of-scope signal in its own right (see "What qualified means" below) — the two facts (no natural person exists, and this disqualifies the company) usually arrive together. A large, publicly-traded multinational (e.g. ABB) is a flat Out-of-scope on its own scale alone — don't treat sheer size as grounds for an "informational contact" exception unless Daniel has specifically said so for that company; size by itself just means the company is too big, not that it's worth a courtesy conversation.
 
+## Financial performance signals (added 2026-09-18)
+
+Headcount was the only screening signal until now. Revenue and Profit Before Tax (columns M/N) add a second, independent path — but Daniel's own caveat going in: these two figures aren't always trustworthy on their own, particularly for companies with group structures or in a fast-growth phase, so apply the same "check the fuller picture before trusting one number" instinct already used for headcount.
+
+**Profit Before Tax is an independent route to Qualified Leads, separate from headcount:**
+- **PBT above £1m and up to £10m** → this alone is enough to copy the company into Qualified Leads, *even if headcount looked Out-of-scope or ambiguous.* Record in Notes which path qualified it (e.g. "Qualified via PBT (£2.3m) — headcount alone would have read Out-of-scope/borderline").
+- **PBT above £10m** → too large for this path. This doesn't by itself force an Out-of-scope verdict (headcount could still independently qualify a company with high PBT), but it means PBT isn't the reason to qualify it.
+- **PBT is in the £1m-£10m qualifying range, but the company is PE-owned or part of a larger group** → **don't auto-qualify and don't auto-disqualify — flag it in Notes for Daniel to judge himself** (Daniel, 2026-09-18: "it depends on who the owner is"). Record the PBT figure and the ownership context together, e.g. "PBT flag: £3.1m PBT, but owned by [PE fund / Group Name] — flagging for review rather than auto-qualifying, ownership context matters here." Set Screening Verdict to "Needs more info" in this case rather than silently picking a side.
+
+**Revenue between £10m and £50m gets flagged for Daniel's own review, not an automatic verdict either way** — add a clear Notes callout (e.g. "Revenue flag: £24m — outside the usual profile, flagging for Daniel to consider fit") and leave the Screening Verdict as whatever the headcount/PBT logic already produced. Don't copy to Qualified Leads on this trigger alone — Daniel decides after seeing the flag, this isn't a path into Qualified Leads by itself the way PBT is.
+
 ## Contact rules
 
 A blank contact cell is honest; a generic one looks like a finding but isn't. For PSC Email (R) and CEO/MD Email (V):
@@ -72,4 +83,9 @@ The same "leave it blank" principle applies to LinkedIn profiles too, not just e
 
 ## What "qualified" means
 
-A company is ready to copy into the Qualified Leads tab once you've: verified headcount (the largest-of-three signal from the sizing heuristic above) and ownership (Companies House PSC, chased to a real person) independently of the company's own website, and checked for an obvious disqualifier (PE-owned, part of a large group, wrong sub-sector, recently acquired, out of the 30-100 headcount band without good reason). When you can't find or confirm something, leave it blank — don't guess, and don't quietly upgrade a guess into a stated fact.
+A company is ready to copy into the Qualified Leads tab via **either** of two independent paths (Daniel, 2026-09-18: PBT is a second route in, not conditional on headcount):
+
+1. **Headcount path**: verified headcount (the larger of Associated Members and Companies House employees, from the sizing heuristic above) in the 30-100 range, ownership (Companies House PSC, chased to a real person) independently confirmed, and no obvious disqualifier (PE-owned, part of a large group, wrong sub-sector, recently acquired).
+2. **Financial performance path**: PBT above £1m and up to £10m, per the "Financial performance signals" section above — this qualifies a company even if headcount alone wouldn't have, *unless* the PE/large-group flag in that section applies, in which case it goes to Daniel for review instead of an automatic qualify.
+
+Either path is sufficient on its own. When you can't find or confirm something, leave it blank — don't guess, and don't quietly upgrade a guess into a stated fact.

@@ -68,13 +68,15 @@ Use `sheets_api.sh batch` to write all 5 rows in one atomic call rather than 5 s
 
 **Before writing, record the exact row number for each company you're about to update** (not just its name) — read the Company Name in that row and confirm it matches before you write anything into it. **A real incident (2026-09-17):** a re-run of an already-enriched batch ended up writing its results to a *different* set of rows than the ones it read from, which both duplicated one company and silently deleted two entirely unrelated ones further down the sheet (their rows got overwritten). This went undetected until Daniel spot-checked cells directly, well after the batch was reported as complete and verified. Reading a cell back after writing only proves the write landed *somewhere* correct — it doesn't prove nothing else shifted or got clobbered. If you insert, delete, or otherwise restructure rows for any reason during a batch, re-run the row-count and duplicate-name checks below before considering the batch finished, not just a read-back of the cells you meant to touch.
 
-### 6. Triage with the headcount heuristic
+### 6. Triage with the headcount heuristic — and check the financial performance path too
 
 Apply the 30–100 headcount sizing band from `references/data-template.md` to help decide the Screening Verdict. This is a triage aid, not the only input — check Ultimate Owner too, since a large group figure can mask a right-sized subsidiary.
 
+**As of 2026-09-18, headcount isn't the only route to qualifying.** Also check Profit Before Tax (column N) against the "Financial performance signals" section of `references/data-template.md` — a PBT of £1m-£10m qualifies a company independently of headcount, unless it's PE/large-group owned, in which case that goes to Daniel as a flag rather than an automatic call. Revenue between £10m-£50m gets its own Notes flag for Daniel regardless of what else the row shows. Neither of these financial checks is optional just because headcount already gave you a clean verdict — run both checks on every company, every time.
+
 ### 7. Qualified leads get copied, not moved
 
-If a company's Screening Verdict comes out In-scope (or otherwise looks like a genuine qualified lead), use `sheets_api.sh append` to add the same row to the **Qualified Leads** tab. The row on Market Map stays exactly as it is — this is a copy for visibility, not a move. Everyone stays mapped, per the existing "map the whole market" rule; Qualified Leads is just the shortlist view on top of it.
+If a company's Screening Verdict comes out In-scope via **either** the headcount path or the PBT path (see step 6 and `references/data-template.md`), use `sheets_api.sh append` to add the same row to the **Qualified Leads** tab. The row on Market Map stays exactly as it is — this is a copy for visibility, not a move. Everyone stays mapped, per the existing "map the whole market" rule; Qualified Leads is just the shortlist view on top of it.
 
 If the Qualified Leads tab doesn't yet have a header row matching the Market Map columns, add one first (same 29 columns, same order) so the two tabs stay directly comparable.
 
