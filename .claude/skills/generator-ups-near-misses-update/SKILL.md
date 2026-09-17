@@ -1,6 +1,6 @@
 ---
 name: generator-ups-near-misses-update
-description: "Also known as: \"Generator + UPS Data Verification - Near misses update\". Monthly re-check of companies on Daniel's Aurias 2 \"Master UK generator and UPS Market Map\" that sat just outside one of the three screening thresholds (headcount, Profit Before Tax, or Revenue) when they were last enriched. All three figures come from filed Companies House accounts, which only change once a year — so this Skill checks each company's own \"next accounts due\" date first and only does the expensive re-pull once new accounts are actually due, instead of re-querying every near-miss company every month regardless. Reclassifies to \"Needs more info\" / Flagged to You where a fresh figure (or, for headcount only, plain staleness) no longer supports the existing Out-of-scope verdict. Use this for the scheduled monthly sweep, or on demand if Daniel asks to re-check near-miss companies. Does NOT re-enrich a whole batch, re-verify PSC/ownership/contacts, or decide anything itself beyond re-running the three screening checks — that's `generator-ups-data-enrichment`'s job if a row needs a fuller pass.
+description: "Also known as: \"Generator + UPS Data Verification - Near misses update\". Monthly re-check of companies on Daniel's Aurias 2 \"Master UK generator and UPS Market Map\" that sat just outside one of the three screening thresholds (headcount, Profit Before Tax, or Revenue) when they were last enriched. Reads each company's own \"Accounts Next Due - Companies House\" date straight off the sheet (column AE) to decide who's actually due a re-check, so most months this needs zero Companies House calls at all — only companies whose due date has passed get the expensive re-pull. Reclassifies to \"Needs more info\" / Flagged to You where a fresh figure (or, for headcount only, plain staleness) no longer supports the existing Out-of-scope verdict. Use this for the scheduled monthly sweep, or on demand if Daniel asks to re-check near-miss companies. Does NOT re-enrich a whole batch, re-verify PSC/ownership/contacts, or decide anything itself beyond re-running the three screening checks — that's `generator-ups-data-enrichment`'s job if a row needs a fuller pass.
 ---
 
 # Generator + UPS near-misses update
@@ -36,40 +36,31 @@ These bands (20-29, £700k-£1m, £8m-£10m) are working defaults, not precision
 
 A row can be a near-miss on more than one axis at once — check all three for every candidate row, don't stop at the first match.
 
-### 2. Gate the expensive re-check behind the accounts due date — this is the "don't run unnecessary calls" step
+### 2. Gate the expensive re-check behind column AE — this is the "don't run unnecessary calls" step
 
-All three figures come from the same filed Companies House accounts, which only update once a year. There's no point re-pulling and re-parsing that filing every month if nothing could plausibly have changed since the last check.
+All three figures come from the same filed Companies House accounts, which only update once a year. There's no point re-pulling and re-parsing that filing every month if nothing could plausibly have changed since the last check — and as of 2026-09-18, there's no need to even ask Companies House whether it's changed, because the answer is already sitting on the sheet.
 
-1. For each near-miss row, do one **cheap** check first: fetch the company's Companies House overview page and read its own published **"Accounts next due"** / **"Next statement date"** field, and the **"last accounts made up to"** date. (Background: private companies must file within 9 months of their accounting reference date — Companies House does this arithmetic for you and publishes the answer directly, so use its own date rather than recomputing it.)
-2. **Only proceed to the full re-pull (step 3) if either:** (a) the "last accounts made up to" date shown is *newer* than the period-end already recorded on the sheet for this company (a new filing has genuinely landed), or (b) today is on/after the "accounts next due" date shown (accounts are now overdue, which sometimes happens, but still means nothing new is available yet — see the headcount-only staleness fallback in step 4 for this case).
-3. If neither is true — the recorded filing is still current and nothing new is due yet — **skip this company entirely this run.** Don't re-pull LinkedIn for it either. Note it in the log as "checked, not yet due" rather than silently omitting it.
+1. For each near-miss row, **read column AE (Accounts Next Due - Companies House) directly off the sheet** — no Companies House call needed for this step at all (Daniel, 2026-09-18: "you don't even need to bother checking Companies House if we already have that information... we only have to do it the once"). AE was captured the last time this company was enriched or re-checked, and records the exact date the next filing is due.
+2. **If today is still before the date in AE, skip this company entirely this run** — no LinkedIn re-check, no Companies House call. The current filing is still the only one that will ever exist for this row until that date. Note it in the log as "checked, not yet due (AE: [date])" rather than silently omitting it.
+3. **If today is on/after the date in AE, go to step 3 below** — this is the only case that costs an actual Companies House call.
 
-This step is what keeps the sweep cheap: most months, most near-miss companies will still be within their filing cycle and get skipped after one lightweight overview-page check, not a full accounts re-pull.
+This is the entire point of AE existing: most months, most near-miss companies get skipped after a free local read, with zero external calls. The only Companies House traffic this Skill generates is for rows whose own recorded due date has actually passed — and note that by construction, a row only reaches that state once its period-end is already close to the 12-month staleness mark (UK filing deadlines are ~9 months after period-end, so "due" and "12 months stale" are only a few months apart) — there's no scenario where AE is still in the future but the underlying figure is already stale, so skipping on AE never risks missing a genuinely stale case.
 
-### 3. Full re-pull — when a newer filing exists
+### 3. When AE says a company is due — check what Companies House actually shows
 
-When step 2 confirms a newer filing is available:
+1. Fetch the company's Companies House overview page. Two possible outcomes:
+   - **A newer filing has actually landed** (the normal case): pull it and extract **all three figures at once** — average employees, PBT, and Revenue, since they're all in the same document, no reason to fetch it three times. Re-pull current LinkedIn Associated Members too (a live number, no staleness concept applies) and recompute working headcount per the sizing heuristic. Re-run all three screening checks: headcount now 30+, PBT now £1m-£10m (subject to the existing PE/large-group flag logic in `data-template.md` — check that too, don't skip it just because this is a re-check), or Revenue now £10m-£50m. **Update column AE to the new "accounts next due" date regardless of what else changes** — this is what keeps next month's free local read in step 2 accurate.
+   - **The company is late filing** — AE has passed but no newer filing exists yet. Nothing to extract for PBT/Revenue (there's no new document, so those figures literally cannot have changed). But headcount gets one more check anyway: if the *already-recorded* Companies House employee figure's period-end is now more than 12 months old, that's still reason enough not to trust an Out-of-scope-on-headcount verdict, per the existing stale-headcount rule. This fallback only applies to headcount, not PBT/Revenue, because LinkedIn gives an independent (if imperfect) live corroborating signal for headcount that has no equivalent for financial figures — there's no "LinkedIn revenue." Leave AE as-is in this case (there's no new due date to record yet); note in the log that the company is overdue and was flagged on staleness alone.
+2. **If any of the three now clears its threshold** (or the headcount-staleness fallback applies), don't decide the full verdict yourself — that needs the fuller checks (ownership, disqualifiers) that only a proper enrichment pass does. Set Screening Verdict to **"Needs more info"**, note which figure changed and how (old value → new value, with source), and copy the row to **Flagged to You**.
+3. **If, even with fresh figures, none of the three thresholds are cleared**, leave the row as Out-of-scope — but update the recorded K/M/N figures (and AE) to the fresh values regardless, so the next sweep starts from current data, not last year's. Log the recheck as "confirmed still Out-of-scope."
 
-1. Pull the new accounts and extract **all three figures at once** — average employees, PBT, and Revenue — since they're in the same document; there's no reason to fetch it three times.
-2. Re-pull current LinkedIn Associated Members too (a live number, no staleness concept applies — just get the current count), and recompute working headcount per the sizing heuristic.
-3. Re-run all three screening checks against the fresh figures:
-   - Headcount now 30+ → no longer Out-of-scope on headcount.
-   - PBT now £1m-£10m → qualifies via the financial-performance path (subject to the existing PE/large-group flag logic in `data-template.md` — check that too, don't skip it just because this is a re-check).
-   - Revenue now £10m-£50m → gets the Notes flag.
-4. If **any** of the three now clears its threshold, or genuinely can't be resolved either way, don't decide the full verdict yourself — that needs the fuller checks (ownership, disqualifiers) that only a proper enrichment pass does. Set Screening Verdict to **"Needs more info"**, note which figure changed and how (old value → new value, with source), and copy the row to **Flagged to You**.
-5. If, even with fresh figures, none of the three thresholds are cleared, leave the row as Out-of-scope — but update the recorded K/M/N figures and their Sources/Notes to the fresh values regardless (so the next sweep starts from current data, not last year's), and log the recheck as "confirmed still Out-of-scope."
-
-### 4. Headcount-only staleness fallback — when no new filing exists but the figure is old anyway
-
-If step 2 found no newer filing (still within the normal filing cycle, nothing overdue), the PBT and Revenue figures literally cannot have changed in our data — skip them, there's nothing to re-check. But headcount gets one more check even without new data: if the recorded Companies House employee figure's period-end is now **more than 12 months old**, that's still reason enough not to trust an Out-of-scope-on-headcount verdict, per the existing stale-headcount rule — set "Needs more info" and copy to Flagged to You, noting the figure is stale with no fresher filing yet available to resolve it. This fallback only applies to headcount, not PBT/Revenue, because LinkedIn gives an independent (if imperfect) live corroborating signal for headcount that has no equivalent for financial figures — there's no "LinkedIn revenue."
-
-### 5. Logging — one row per run, not per company
+### 4. Logging — one row per run, not per company
 
 Append one row to the **Near-Miss Review Log** tab (via `sheets_api.sh append` against `Near-Miss Review Log!A:F`) summarizing the whole sweep: Date, Companies Checked (count — this means everything in the near-miss set, including ones skipped as "not yet due"), Companies Reclassified (count + names), Companies Confirmed Still Out-of-Scope (count), Details (one line per company that got a fresh check — old figure(s) vs new, which axis triggered it if reclassified, or "not yet due" if skipped), Run By ("generator-ups-near-misses-update"). This is a different shape of record than the per-batch Verification Log (which scores enrichment accuracy) — don't write into that tab, this is a periodic sweep, not a QA pass on freshly-written data.
 
 If the near-miss set is empty, still log a row saying so — an empty run is itself a useful data point.
 
-### 6. Tell Daniel what happened
+### 5. Tell Daniel what happened
 
 A short note: how many companies were in the near-miss set, how many were actually due for a re-check vs. skipped as premature, how many got reclassified and on which axis, and a pointer to Flagged to You if anything landed there. Don't over-explain what didn't change.
 

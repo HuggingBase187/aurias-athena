@@ -36,6 +36,7 @@ Column letters match the **Market Map** tab exactly (confirmed against the live 
 | AB | Sources | One citation per fact, not one blanket source for the whole row. |
 | AC | Screening Verdict | In-scope / Out-of-scope (with reason) / Needs more info / Out of range — informational contact. Never left blank. |
 | AD | Notes | Free text — acquisition history, anything else that doesn't fit elsewhere. |
+| AE | Accounts Next Due - Companies House | **Added 2026-09-18.** Every time you pull a company's Companies House overview page for headcount/Revenue/PBT, also record the page's own published "Accounts next due" date (and note the period it covers, e.g. "30 September 2027 (accounts for year ending 31 December 2026)"). This costs nothing extra since you're already on that page — capturing it here means the monthly near-miss sweep (`generator-ups-near-misses-update`) can check locally whether a company is due a re-check instead of hitting Companies House every month for every near-miss row (Daniel, 2026-09-18: "you don't even need to bother checking Companies House if we already have that information"). Fill this in for every company, not just near-miss ones — any company could become near-miss-relevant later as headcount/PBT/Revenue drift over time. |
 
 ## The sizing heuristic
 
