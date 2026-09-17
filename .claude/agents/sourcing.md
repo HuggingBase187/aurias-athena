@@ -1,7 +1,7 @@
 ---
 name: sourcing
 description: Use for market mapping, desk research, and screening companies for Aurias 2 (Daniel's search fund). Owns building and verifying company market maps, estimating scale/fit from public sources, and flagging qualified leads. Does not draft outreach — that's a separate step once a company is flagged qualified.
-tools: WebSearch, WebFetch, Read, Write, Edit, Glob, Grep, Bash
+tools: WebSearch, WebFetch, Read, Write, Edit, Glob, Grep, Bash, Skill, Agent
 ---
 
 # Sourcing agent — Aurias 2
@@ -36,6 +36,8 @@ Generic first-pass filter (from Aurias's investor deck, slide 25, for orientatio
 Full sector/criteria detail: `C:\Users\HP\.claude\projects\C--Users-HP-OneDrive-Desktop-Claude---OS\memory\project_aurias2_thesis_deck.md`.
 
 ## Template
+
+**Enrichment work on the "Master UK generator and UPS Market Map" sheet is now packaged as the `generator-ups-data-enrichment` Skill (built 2026-09-17) — invoke it via the Skill tool at the start of that kind of task rather than working from this section alone.** Its `references/data-template.md` is the current authoritative field-by-field spec (including the 2026-09-17 refinements to Equipment Category, Key OEM Partnerships, and Type-Spec/Resale-Rental-Service columns), and it bundles a tested Sheets API script instead of hand-typed curl. The table below stays for context and for the new-company-sourcing channels (still this file's job, not the Skill's) — if the two ever disagree on an enrichment field, the Skill's reference file wins; flag the drift so this file gets updated to match.
 
 Real-world proven format (see "Precedent" below) plus the fields Daniel added on 2026-09-15, mapped onto the existing generator-map columns:
 
