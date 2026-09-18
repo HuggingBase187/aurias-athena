@@ -144,6 +144,10 @@ Re-verify row identity (step 1b) before every one of these writes, same as alway
 
 **Before writing, record the exact row number for each company you're about to update** (not just its name) — read the Company Name in that row and confirm it matches before you write anything into it, per the row-identity rule in step 1b. If you insert, delete, or otherwise restructure rows for any reason during a batch, re-run the row-count and duplicate-name checks before considering the batch finished — a read-back only proves the cells you meant to touch landed correctly, it doesn't prove nothing else shifted or got clobbered elsewhere on the sheet. **See `references/sheet-write-safety.md` (section 2, "Incident B") for the real batch-mismatch incident this protects against** — a re-run that silently duplicated one company and overwrote two unrelated ones, undetected until a direct spot-check.
 
+### 5a. Log new vocabulary
+
+While reading a company's website, note any product name, service word or services-offered phrase that isn't in the Scope & Search Vocabulary doc, and log it through the `search-vocabulary-capture` Skill (`scripts/vocab_capture.py log`). Don't edit the doc yourself.
+
 ### 6. Decide the verdict
 
 Apply the "Screening rules" section of `references/data-template.md` — financials first, headcount only when no PBT is filed, ownership next. For near misses (PBT £700k–£1m, headcount 20–29), read the **Near Miss Rules** Google Doc fresh every time and route exactly as it says. Run every financial check on every company, even when headcount already looks decisive.

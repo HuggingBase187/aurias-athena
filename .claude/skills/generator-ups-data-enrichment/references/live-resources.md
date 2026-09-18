@@ -31,6 +31,7 @@ Current IDs for the sheets this skill works against. Google Docs/Sheets get recr
 Read these fresh on every run — they are the source of truth, not any copy in this repo.
 
 - **Scope & Search Vocabulary** (`1VcU78QCMR0Az9N-l-mVidFe5Qsu6ZvoD-xB6RzD9ScQ`): Section 0 = the single list of in-scope hardware and services; Section 1 = search keywords; Section 2 = services vocabulary for the Services Offered column.
+- **Vocabulary Log — Aurias 2** (`1y1iOwjN1BHrNM0GKWZS68WuXZRIPAiHvy-jm-iZcq5A`): Sightings and Tally tabs, written only by `scripts/vocab_capture.py` (see the `search-vocabulary-capture` Skill).
 - **Near Miss Rules** (`1C6BGckrgU-5j7MPfMriWdw_3pPuqqAPg3Q8oYsc9_Wg`): near-miss bands and where each near miss goes.
 
 ## Related docs (context, not written to by this skill)

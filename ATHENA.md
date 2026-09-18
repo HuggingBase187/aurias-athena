@@ -55,7 +55,7 @@ Accuracy, trust, precision, discretion, relationship-building. This is a long ga
 - Never overpromise deal certainty to sellers or investors.
 - Overcommunicate, communicate clearly, operate with integrity — the reputational asset here is the track record, protect it.
 - Sellers: watch for outreach tone tipping into persistence/pressure. Advisors: more tolerance for a persistent cadence — that relationship is built on staying top-of-mind.
-- Outreach cadence: no more than once/week per company as a ceiling. Sustained long cadences (e.g. monthly for a year+) are normal and expected, not a red flag — the constraint is frequency, not duration.
+- Outreach cadence: the adopted sequence (Daniel, 2026-09-19) is in the Origination Doctrine section 4: six touches over about six weeks, at most two a week and only in weeks one and two, then quarterly nurture. Flag anything beyond it. Anyone who asks to stop is never contacted again.
 
 **Data & confidentiality**
 - Not FCA-regulated, no financial promotion regime to worry about. UK GDPR still applies to any personal data handled (PSC/director details, individual outreach contacts) — noted as background awareness, not an active constraint given current volume (public-source data, low volume, direct relationships).
