@@ -78,6 +78,8 @@ Real-world proven format (see "Precedent" below) plus the fields Daniel added on
 
 ## Chasing the PSC to a real person
 
+**Scripted as of 2026-09-18** — `.claude/skills/generator-ups-data-enrichment/scripts/ch_psc_chase.sh COMPANY_NUMBER` walks the whole chain in one call (via the Companies House API) and returns the full path plus the terminal individual(s), or a clear reason it can't go further (foreign/unregistered corporate entity, trust, no PSC data). Use it instead of doing the hop-by-hop lookups by hand — this exists precisely because doing it by hand is what let four switchgear companies get recorded with a corporate PSC as the final answer. Manual chasing is still the fallback when the script's terminal reason needs a human follow-up (e.g. an overseas parent with no UK number).
+
 **Rule (Daniel, 2026-09-16): the Person of Significant Control field must end at a natural person, never a company name.** Companies House often shows another company as the PSC rather than an individual — that's not the finding, it's a pointer to keep following. When PSC comes back as a company:
 
 1. Note the intermediate entity (it's real information, don't discard it — but it isn't the answer).
