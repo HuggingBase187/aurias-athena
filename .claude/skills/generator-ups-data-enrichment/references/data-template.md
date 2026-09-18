@@ -62,7 +62,7 @@ This isn't a retroactive research requirement — it's about where a fact alread
 
 ## What we're actually screening for (added 2026-09-18 — read this before the sections below)
 
-Aurias 2's real target is a company with **PBT of roughly £2m-£4m** (Daniel's underwriting criterion — stated once as "EBITDA" and corrected the same day to PBT, so PBT is the actual metric, not a stand-in for something else). Profit Before Tax and Revenue (columns M/N), as filed, are the real signal this pipeline screens on.
+Aurias 2's real target is a company with **PBT of roughly £2m-£4m** (Daniel's underwriting sweet spot), and the map covers **PBT £1m–£10m**. The £1m floor exists because filed accounts lag 12–15 months — a company at £1m last year may be at £2m now (Daniel, 2026-09-18). Profit Before Tax and Revenue (columns M/N), as filed, are the real signal this pipeline screens on.
 
 **This means Revenue/PBT take precedence over headcount, not the other way around (Daniel, 2026-09-18): "number of employees is a proxy for revenue and PBT."** Headcount was never really about people count for its own sake — it's a rough stand-in for company size, used because *revenue is rarely disclosed for the smallest private companies* and something was needed to triage those cases. Where PBT/Revenue are actually disclosed and give a clear read, **that's the real signal — headcount is the fallback proxy for when the real signal isn't available**, not a co-equal or overriding one. If the two ever genuinely conflict (e.g. headcount reads comfortably in-scope but disclosed PBT is clearly outside the qualifying range, or vice versa), lean on the disclosed financial figure — it's closer to the actual thing Daniel is underwriting.
 
