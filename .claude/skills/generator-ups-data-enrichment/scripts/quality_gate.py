@@ -17,9 +17,12 @@ Usage:
 
 Verdicts:
   PASS            live Companies House company, name agrees, not micro/dormant.
-  FAIL_DISSOLVED  Companies House says dissolved / liquidation / administration etc.
-  FAIL_TOO_SMALL  latest filed accounts are micro-entity or dormant (a micro-entity
-                  can't be near the PBT GBP 1m floor). Fact from CH, not an estimate.
+  FAIL_DISSOLVED  the row's own recorded Companies House number is dissolved /
+                  in liquidation / administration etc.
+  FAIL_TOO_SMALL  the row's own recorded number files micro-entity or dormant
+                  accounts (can't be near the PBT GBP 1m floor).
+  (Both FAILs need a recorded CH number. A match found only by name search is
+  always REVIEW -- a same-name company is too often a different business.)
   FAIL_NO_COMPANY no Companies House match AND website missing or dead
                   -> suspected hallucination.
   REVIEW          anything ambiguous (name mismatch, CH found only by name search,
@@ -149,7 +152,13 @@ def check_site(url):
 
 def verdict(ch, site, dup):
     status = ch.get("ch_status")
-    if ch["how"] in ("number", "name_search") and status in DEAD_STATUSES:
+    if ch["how"] == "name_search":
+        # A name match alone proves nothing: on the 2026-09-18 legacy run, 31 of
+        # 77 name-only matches were a different company with the same name.
+        # Report what the match shows, but never fail a row on it.
+        return "REVIEW", (f"name-only match {ch.get('ch_name')} {ch.get('ch_number')} "
+                          f"({status}; accounts {ch.get('accounts_type')}) — confirm by address or website")
+    if ch["how"] == "number" and status in DEAD_STATUSES:
         return "FAIL_DISSOLVED", f"Companies House status: {status}"
     if ch["how"] in ("no_match", "number_not_found"):
         if site in ("none", "dead"):
@@ -161,8 +170,6 @@ def verdict(ch, site, dup):
         return "REVIEW", f"recorded CH number belongs to '{ch.get('ch_name')}'"
     if ch.get("accounts_type") in SMALL_ACCOUNTS:
         return "FAIL_TOO_SMALL", f"latest accounts filed as {ch.get('accounts_type')}"
-    if ch["how"] == "name_search":
-        return "REVIEW", f"matched by name search only ({ch.get('ch_name')} {ch.get('ch_number')})"
     return "PASS", f"{status}; accounts {ch.get('accounts_type')}; website {site}"
 
 

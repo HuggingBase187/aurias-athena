@@ -108,7 +108,8 @@ Follow the order of checks in the "Screening rules" section of `references/data-
 
 **Pass 0 — quality gate (script, no research).** Run `scripts/quality_gate.py` on the batch's rows (read-only; needs `COMPANIES_HOUSE_API_KEY` from the repo `.env`). Then:
 - `FAIL_NO_COMPANY` → run the hallucination checklist ("Untraceable companies" in `data-template.md`) and, if confirmed, step 6a.
-- `FAIL_DISSOLVED` / `FAIL_TOO_SMALL` → confirm the matched Companies House entity is this company (address or website agree), then Out-of-scope with the reason. If it's a different company with the same name, treat the row as `REVIEW`.
+- `FAIL_DISSOLVED` / `FAIL_TOO_SMALL` (only ever from the row's own recorded Companies House number) → Out-of-scope with the reason.
+- `REVIEW` with a name-only match → confirm by address or website before trusting it; a same-name company is often a different business. Read the row's Notes first — earlier checks may already name the right entity.
 - `PASS` / `REVIEW` → Pass 1.
 
 **Pass 1 — one Companies House visit.** Pull PBT, Revenue, Employees (K), the PSC register and Accounts Next Due (AD) together. Also check the homepage matches Section 0 of the Scope & Search Vocabulary doc. Write the verdict now if these decide it.
