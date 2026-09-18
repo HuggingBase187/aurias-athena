@@ -85,11 +85,14 @@ case "$MODE" in
     RANGE="${3:?Usage: $0 write SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
     VALUES_JSON="${4:?Usage: $0 write SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
     ENC_RANGE=$(urlencode "$RANGE")
+    BODY_FILE=$(mktemp)
+    trap 'rm -f "$BODY_FILE"' EXIT
+    printf '{"values": %s}' "$VALUES_JSON" > "$BODY_FILE"
     curl -s -X PUT \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
       "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ENC_RANGE}?valueInputOption=RAW" \
-      -d "{\"values\": ${VALUES_JSON}}"
+      --data-binary "@${BODY_FILE}"
     ;;
 
   clear)
@@ -108,20 +111,26 @@ case "$MODE" in
     RANGE="${3:?Usage: $0 append SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
     VALUES_JSON="${4:?Usage: $0 append SHEET_ID 'Tab!Range' 'JSON_VALUES'}"
     ENC_RANGE=$(urlencode "$RANGE")
+    BODY_FILE=$(mktemp)
+    trap 'rm -f "$BODY_FILE"' EXIT
+    printf '{"values": %s}' "$VALUES_JSON" > "$BODY_FILE"
     curl -s -X POST \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
       "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${ENC_RANGE}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS" \
-      -d "{\"values\": ${VALUES_JSON}}"
+      --data-binary "@${BODY_FILE}"
     ;;
 
   batch)
     SHEET_ID="${2:?Usage: $0 batch SHEET_ID 'JSON_DATA_ARRAY'}"
     DATA_JSON="${3:?Usage: $0 batch SHEET_ID 'JSON_DATA_ARRAY'}"
+    BODY_FILE=$(mktemp)
+    trap 'rm -f "$BODY_FILE"' EXIT
+    printf '{"valueInputOption": "RAW", "data": %s}' "$DATA_JSON" > "$BODY_FILE"
     curl -s -X POST \
       -H "Authorization: Bearer $TOKEN" \
       -H "Content-Type: application/json" \
-      -d "{\"valueInputOption\": \"RAW\", \"data\": ${DATA_JSON}}" \
+      --data-binary "@${BODY_FILE}" \
       "https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values:batchUpdate"
     ;;
 
