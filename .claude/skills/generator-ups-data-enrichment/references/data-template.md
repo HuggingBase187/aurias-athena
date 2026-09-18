@@ -37,7 +37,7 @@ Column letters match the **Market Map** tab exactly (confirmed against the live 
 | W | CEO / MD Phone | Same treatment as PSC Phone. Fine to leave blank if not found — lower priority than CEO/MD LinkedIn. |
 | X | Key OEM Partnerships | **Pair each OEM to the specific equipment category it applies to, for every category the company offers.** Format: `Category - OEM1, OEM2; Category2 - OEM3`. E.g. a company reselling Cummins and Perkins generators and Crestchic load banks gets `Generator - Cummins, Perkins; Load bank - Crestchic` — not a single flat list of OEM names with no indication of which product line each belongs to. |
 | Y | Type-Spec / Resale-Rental-Service | **List each of Resale / Rental / Service that genuinely applies, spelled out individually.** Never write "all" or "both" — if a company does resale and service but not rental, the cell reads `Resale, Service`. |
-| Z | Services Offered | Use the real market vocabulary from the "Scope & Search Vocabulary" doc's Section 2 (see `references/live-resources.md` for the doc ID) — installation, maintenance, repairs, load bank testing, etc. This is a living list; if you notice a genuinely recurring service description that isn't in it yet, add it there and flag the addition. |
+| Z | Services Offered | Use the real market vocabulary from the "Scope & Search Vocabulary" doc's Section 2 (see `references/live-resources.md` for the doc ID) — installation, maintenance, repairs, load bank testing, etc. This is a living list. New service descriptions and new names for in-scope hardware go in directly; anything that would add a new category to Section 0 (scope) is proposed to Daniel, not added (Daniel, 2026-09-19). Flag every addition in your batch report. |
 | AA | Primary Sectors | End-customer sectors served, e.g. data centres, healthcare, construction. |
 | AB | Screening Verdict | In-scope / Out-of-scope (with reason) / Needs more info / Out of range — informational contact. Never blank. **Every "Needs more info" row is copied to Flagged to You**, whatever the reason — it means Daniel's eyes are needed. |
 | AC | Notes | Free text — acquisition history, anything else that doesn't fit elsewhere. |
@@ -80,6 +80,7 @@ This isn't a retroactive research requirement — it's about where a fact alread
 - **Headcount (no PBT filed): 30–100 → in scope.** Above ~100, check ownership before ruling out — a group figure can hide a right-sized subsidiary.
 - **Near misses** (PBT £700k–£1m, headcount 20–29): routing is defined in the **Near Miss Rules** doc (ID in `references/live-resources.md`). Read it every time; don't rely on memory or a copy.
 - **No PBT disclosed**: record Accounts Next Due (AD). The monthly sweep re-checks the row when new accounts are due.
+- **LinkedIn-only headcount** (no PBT and no K filed, J 20–29): Out-of-scope. J is a live number with no accounts date behind it, so it isn't a near miss. The monthly sweep lists these rows for Athena to recheck J; J at 30 or more → re-screen as headcount 30–100.
 
 **Ownership.**
 - Target is **owner-operated**.

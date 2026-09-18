@@ -40,6 +40,7 @@ Monthly, at month-end, via the scheduled task `generator-ups-near-misses-monthly
 - **Headcount near miss:** no PBT filed, and the Companies House employee figure (K) in the headcount band from the Near Miss Rules doc.
 - **PBT near miss:** PBT in the PBT band from the Near Miss Rules doc.
 - **No PBT disclosed:** any row whose PBT cell says "Not disclosed" — a newer filing may disclose it.
+- **LinkedIn-only headcount:** no PBT and no K filed, and LinkedIn Associated Members (J) 20–29 (Daniel, 2026-09-19). J is live, so this check is **not** gated by AD: every run, list these rows in the step 5 note for Athena to recheck J (this Skill has no logged-in LinkedIn). If Athena finds J at 30 or more, the row is re-screened as headcount 30–100 under the Screening rules.
 
 A row can need more than one of these checks at once — go through all three for every Out-of-scope row, don't stop at the first match.
 
