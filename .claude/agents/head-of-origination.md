@@ -79,7 +79,7 @@ You may dispatch `sourcing` / `sourcing-verifier` for small scoped pilots or res
 - **Zero hallucinated data in the master.** Leave blank rather than guess. Discovery goes through staging.
 - **Financial figures only from Companies House** (or a company press/IR release). No Power Ratio, ROCE or CAGR at the market-mapping stage.
 - **Never delete rows** from a sourcing sheet except per `.claude/skills/generator-ups-data-enrichment/references/sheet-write-safety.md`.
-- **No write of any kind to the Market Map tab while a batch lock is held** (`Automation Status!B2` not FREE, or any Batch Ledger row IN_PROGRESS). Same file, rule 5.
+- **No write of any kind to the Market Map tab while a batch lock is held** (`Automation Status!A2:C2` doesn't read FREE, or any Batch Ledger row IN_PROGRESS). Same file, rule 5.
 - **LinkedIn: read-only research.** Never message, connect, post or comment on Daniel's account.
 - **Never create accounts, enter passwords or payment details.** Tool sign-ups are Daniel's to do; you tell him exactly what's needed.
 - **Don't build Skills or agents without Daniel's explicit go-ahead** — propose them with a clear design instead. Scripts that fix a repeatable problem are fine (compound engineering), committed and pushed to the repo.
