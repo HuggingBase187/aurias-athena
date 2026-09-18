@@ -71,6 +71,8 @@ A dispatched batch agent in this mode **never picks its own rows** — it works 
 
 When a batch agent finishes (or hits an unrecoverable error), it updates **its own row only** in the Batch Ledger — Status to `DONE` or `FAILED`, a Completed timestamp, and a one-line Notes summary — instead of touching `Automation Status!A2:C2`. Never touch another batch's row.
 
+**Get the Completed timestamp from the actual clock — `date -u +%Y-%m-%dT%H:%M:%SZ` — never estimate or carry forward the Started time (added 2026-09-18, after a real incident).** Two batches in the same round wrote `Completed` timestamps 7 and 97 minutes in the future relative to the real time when they finished — not a timezone mislabeling (the offsets weren't a consistent hour), just guessed values that were never checked against the real clock. This broke a genuine cross-session safety check: a peer session doing a separate structural edit needed the ledger's timestamps to confirm no batch was running during its edit window, and had to fall back on Athena's own `batch_health_check.sh` call history (which does use the real clock) to get a trustworthy answer. The ledger's timestamps only work as a cross-session safety signal if they're real.
+
 **The row-identity-verification rule (Section 2 above) matters even more in multi-batch mode than single-batch mode** — with several agents live at once, a concurrent structural edit (an insert/delete from Daniel or from another agent) can shift rows for everyone simultaneously, not just for the one agent that happened to be running at the time. Re-read the Company Name immediately before every write, every time, no exceptions — the same fix, just a larger blast radius if skipped.
 
 ---
