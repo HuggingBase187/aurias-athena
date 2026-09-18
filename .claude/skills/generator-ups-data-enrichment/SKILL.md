@@ -21,6 +21,10 @@ Read `C:\Users\HP\OneDrive\Desktop\Claude — OS\ATHENA.md` first for house styl
 
 Only these 7 categories: UPS, critical power services, backup generators, transformers, battery energy storage systems (BESS), switchgears, load banks. If a company on the sheet turns out to be clearly outside all 7, that's a Screening Verdict of Out-of-scope with a reason — not something to silently skip past.
 
+## LinkedIn work requires the Claude-in-Chrome tool — load it before you need it, not after
+
+**Added 2026-09-18, after several batches quietly fell back to WebSearch/WebFetch for LinkedIn and got it wrong or left profiles blank.** LinkedIn mostly won't render to a logged-out session, and WebSearch only sees Google's sparse, stale index of it — that's how a real "James Richardson" working at Greenshields JCB gets missed while unrelated same-name profiles at other companies show up instead. The `sourcing` agent's own definition (`.claude/agents/sourcing.md`) already says to use Daniel's logged-in Chrome for anything on LinkedIn, and lists `claude-in-chrome` as an available MCP server — but that's not automatic. **At the start of any batch, load it explicitly** (`ToolSearch` for `mcp__claude-in-chrome__*`) and use LinkedIn's own logged-in search (`https://www.linkedin.com/search/results/people/?keywords=...`) for every PSC/CEO/MD LinkedIn lookup, rather than reaching for WebSearch/WebFetch first and only falling back to the browser if that fails. If the browser tool is genuinely unavailable in your context, say so explicitly in your batch report rather than silently leaving the field blank or accepting a low-confidence match — that's a tooling gap worth fixing, not a normal "couldn't find it."
+
 ## The workflow
 
 ### 1. Check the batch lock, then pick up where the sheet leaves off
