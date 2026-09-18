@@ -17,6 +17,9 @@ Read `C:\Users\HP\OneDrive\Desktop\Claude — OS\ATHENA.md` first for house styl
 - **Full field-by-field template**, the sizing heuristic, the PSC-chase procedure, and the contact rules: `references/data-template.md` — read this before starting a batch, don't work from memory of a previous run.
 - **Shared safety rules** (never delete a non-duplicate row, re-verify row identity before every write, character-encoding safety, the Automation Status/Batch Ledger lock protocols) — canonical version, with the real incidents behind each rule, lives in `references/sheet-write-safety.md`. The same rules apply to `generator-ups-data-verification` and `generator-ups-near-misses-update`; this is the one place they're written out in full.
 - **Bundled script** for all sheet reads/writes: `scripts/sheets_api.sh` — use this instead of hand-writing curl calls. Run it with no arguments to see the usage for each mode (`read`, `write`, `clear`, `batch`, `append`, `format`, `meta`). **Test suite: `scripts/test_sheets_api.sh`** — run this after any edit to `sheets_api.sh` before trusting it again; it's safe to run any time (zero side effects on real data).
+- **PSC chase, scripted (added 2026-09-18):** `scripts/ch_psc_chase.sh COMPANY_NUMBER` walks a Companies House PSC chain to the underlying natural person(s) in one call instead of doing it hop-by-hop by hand — see the "Chasing the PSC to a real person" section of `.claude/agents/sourcing.md` for why. Read-only, hits the Companies House API (key in the project's `.env`), no sheet access.
+- **Duplicate-candidate scan, scripted (added 2026-09-18):** `scripts/duplicate_scan.sh SHEET_ID` scans the whole Market Map for likely duplicate rows (exact Companies House number/LinkedIn match, exact name after stripping Ltd/plc, fuzzy name similarity) instead of relying on stumbling onto them during enrichment. Read-only, prints candidates only — it never deletes or decides; see `.claude/agents/sourcing-verifier.md`'s "Duplicate/conflicting rows" check.
+- **Google Docs edits, scripted (added 2026-09-18):** `scripts/docs_api.sh` reads/writes the Services Vocabulary & Search Keywords doc and Near Miss Rules doc directly via the Docs API (same service account, wider token scope) — `get`/`text` to read, `append` to add at the end, `replace` for exact-text find/replace (also the safe way to do a targeted insert against a stable marker line). Replaces the old trash-and-recreate browser-automation approach entirely — see [[feedback_avoid_live_gdoc_editing]].
 
 ## Scope
 
@@ -51,6 +54,16 @@ If you're a batch agent running in this mode:
 - Still hand off to the `sourcing-verifier` subagent per step 9 below, same as single-batch mode.
 
 Daniel has agreed to pause his own manual row/column edits on the Market Map while multi-batch mode is actively running, specifically to keep the risk surface down — this doesn't remove the need for the identity-verification rule (another concurrent agent is still a source of structural change), but it does remove the most common trigger seen so far (a manual edit landing mid-batch).
+
+**Default round shape (confirmed 2026-09-18): 3 concurrent batches of 5 = 15 companies per round.** This is a working default, not a hard limit — Athena adjusts if a specific situation calls for it, but this is where to start without being asked.
+
+#### A round isn't "complete" until the LinkedIn sweep is done, not just the Companies House research
+
+**Confirmed 2026-09-18, after a real gap:** across several rounds, batch agents correctly left LinkedIn-sourced fields blank per the rule above and handed them to Athena — but Athena reported those rounds as done without actually doing the LinkedIn sweep, creating a backlog that Daniel had to notice and flag three separate times before it got addressed. The fix isn't a reminder, it's a sequencing rule: **Athena does the LinkedIn sweep for every company in a round immediately after the batches finish, as a blocking step, before telling Daniel the round is done.** A round that's "done except LinkedIn" is not done — say so explicitly if a genuine interruption forces a report before the sweep is finished, rather than letting it read as complete.
+
+#### Borderline/override verdict calls get batched into one review per round, not flagged one at a time
+
+**Confirmed 2026-09-18.** A "Needs more info" verdict that needs Daniel's judgment (PBT qualifies but ownership is PE/large-group, a stale near-miss, etc.) doesn't need to interrupt him the moment one batch agent reports it. Athena collects every such call from a round together and brings them to Daniel as one batch of decisions once the round (including its LinkedIn sweep) is finished — not as a drip of separate interruptions mid-round. This is about pacing the *conversation*, not the underlying "Needs more info" → Flagged to You mechanism, which is unchanged.
 
 ### 0. Never delete a row unless it's a confirmed exact duplicate
 
