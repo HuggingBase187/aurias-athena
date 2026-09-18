@@ -14,6 +14,9 @@
 #   docs_api.sh text     DOC_ID              -- just the plain text content
 #   docs_api.sh append   DOC_ID 'TEXT'       -- appends TEXT at the very end
 #   docs_api.sh replace  DOC_ID 'OLD' 'NEW'  -- exact-text find/replace, whole doc
+#   docs_api.sh insert_before DOC_ID 'ANCHOR PARAGRAPH TEXT' BLOCKS_JSON_FILE
+#                                            -- insert styled headings/paragraphs/bullets
+#                                               before an existing paragraph (see docs_insert.py)
 #
 # `replace` is also the safe way to do a targeted insert: doc authors should
 # keep a stable marker line (e.g. "-- add new entries above this line --")
@@ -34,7 +37,7 @@ fi
 
 MODE="${1:-}"
 if [ -z "$MODE" ]; then
-  echo "Usage: $0 {get|text|append|replace} ..." >&2
+  echo "Usage: $0 {get|text|append|replace|insert_before} ..." >&2
   exit 1
 fi
 
@@ -120,8 +123,20 @@ print(json.dumps({'requests':[{'replaceAllText':{
       "https://docs.googleapis.com/v1/documents/${DOC_ID}:batchUpdate"
     ;;
 
+  insert_before)
+    DOC_ID="${2:?Usage: $0 insert_before DOC_ID 'ANCHOR' BLOCKS_JSON_FILE}"
+    ANCHOR="${3:?Usage: $0 insert_before DOC_ID 'ANCHOR' BLOCKS_JSON_FILE}"
+    BLOCKS_FILE="${4:?Usage: $0 insert_before DOC_ID 'ANCHOR' BLOCKS_JSON_FILE}"
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    DOC_FILE=$(mktemp); BODY_FILE=$(mktemp)
+    trap 'rm -f "$DOC_FILE" "$BODY_FILE"' EXIT
+    curl -s -H "Authorization: Bearer $TOKEN"       "https://docs.googleapis.com/v1/documents/${DOC_ID}" > "$DOC_FILE"
+    PYTHONIOENCODING=utf-8 python "$SCRIPT_DIR/docs_insert.py" "$DOC_FILE" "$ANCHOR" "$BLOCKS_FILE" > "$BODY_FILE"
+    curl -s -X POST       -H "Authorization: Bearer $TOKEN"       -H "Content-Type: application/json"       --data-binary "@${BODY_FILE}"       "https://docs.googleapis.com/v1/documents/${DOC_ID}:batchUpdate"
+    ;;
+
   *)
-    echo "Unknown mode: $MODE (use get, text, append, or replace)" >&2
+    echo "Unknown mode: $MODE (use get, text, append, replace, or insert_before)" >&2
     exit 1
     ;;
 esac
