@@ -38,5 +38,19 @@
       "WebFetch(domain:www.companiesintheuk.co.uk)",
       "WebFetch(domain:s3.eu-west-2.amazonaws.com)"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/sync_rules_on_edit.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
   }
 }

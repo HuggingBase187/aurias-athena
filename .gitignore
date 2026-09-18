@@ -4,3 +4,4 @@
 *.key
 credentials/
 .claude/settings.local.json
+.claude/skills/generator-ups-data-enrichment/scripts/.screening_rules.hash
