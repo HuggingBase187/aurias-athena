@@ -38,6 +38,21 @@ Column letters match the **Market Map** tab exactly (confirmed against the live 
 | AD | Accounts Next Due - Companies House | **Added 2026-09-18.** Every time you pull a company's Companies House overview page for headcount/Revenue/PBT, also record the page's own published "Accounts next due" date (and note the period it covers, e.g. "30 September 2027 (accounts for year ending 31 December 2026)"). This costs nothing extra since you're already on that page — capturing it here means the monthly near-miss sweep (`generator-ups-near-misses-update`) can check locally whether a company is due a re-check instead of hitting Companies House every month for every near-miss row (Daniel, 2026-09-18: "you don't even need to bother checking Companies House if we already have that information"). Fill this in for every company, not just near-miss ones — any company could become near-miss-relevant later as headcount/PBT/Revenue drift over time. |
 | AE | Sources | One citation per fact, not one blanket source for the whole row. **Moved here from AB on 2026-09-18 (Daniel moved it manually) — it's now the last column, not the fourth-from-last.** |
 
+## Columns I, J, K hold a number and nothing else (added 2026-09-18)
+
+**Daniel's direct feedback: "the number is the most important data point. I don't need the source info here."** Company Size on LinkedIn (I), Associated Members on LinkedIn (J), and Employees - Companies House (K) had been accumulating inline commentary — how the figure was confirmed, the date it was checked, a confidence caveat, a note that it's below/above another column's figure. That commentary crowds out the one thing these cells exist to hold, and makes the sheet harder to read and to sort/filter on as a plain number.
+
+**These three cells hold the band or figure alone** — `51-200 employees`, `72`, `28` — nothing else. Before/after example:
+- Before: `72 (LinkedIn "employees on LinkedIn" figure via search snippet - could not confirm via logged-in view this session, low confidence, notably below the CH figure)`
+- After: `72` in the cell, with `Associated Members (72, via search snippet, unconfirmed via logged-in view) notably below the Companies House figure` moved to Notes (AC) if that comparison matters to the verdict, or into Sources (AE) if it's purely a citation.
+
+**Where does the commentary actually go, then — don't just delete it if it's load-bearing:**
+- *How/when it was confirmed* (WebFetch, logged-in LinkedIn view, a search snippet, the date checked) — that's a citation, it belongs in Sources (AE), one line per fact, same as any other sourced field.
+- *A genuine confidence caveat or a discrepancy between two figures that actually affects the verdict* (e.g. one source reads well under the 30-employee floor and another reads well over it) — that's analysis, it belongs in Notes (AC), not silently discarded and not left buried in the number cell where it won't surface when someone scans the column.
+- Don't duplicate the same caveat in both Notes and Sources — pick whichever one it actually is (a citation vs. a judgment call) and put it there once.
+
+This isn't a retroactive research requirement — it's about where a fact already gathered gets written down, not about gathering anything new.
+
 ## What we're actually screening for (added 2026-09-18 — read this before the sections below)
 
 Aurias 2's real target is a company with **PBT of roughly £2m-£4m** (Daniel's underwriting criterion — stated once as "EBITDA" and corrected the same day to PBT, so PBT is the actual metric, not a stand-in for something else). Profit Before Tax and Revenue (columns M/N), as filed, are the real signal this pipeline screens on.
