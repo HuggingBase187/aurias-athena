@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Reads the Market Map's full row range (A:AE, piped in as Sheets API JSON on
+Reads the Market Map's full row range (A:AF, piped in as Sheets API JSON on
 stdin) and flags likely duplicate rows. Never deletes, never decides -- per
 the hard-line rule in ATHENA.md, only a confirmed exact duplicate may ever
 be removed, and that call stays a human/agent judgment, not this script's.

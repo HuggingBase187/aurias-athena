@@ -61,4 +61,4 @@ else:
 echo "=== If either lock above is not clear, review-only: note the recommendation, don't delete anything yet. ===" >&2
 echo "" >&2
 
-bash "$SCRIPT_DIR/sheets_api.sh" read "$SHEET_ID" "${TAB}!A2:AE5000" | python "$SCRIPT_DIR/duplicate_scan.py"
+bash "$SCRIPT_DIR/sheets_api.sh" read "$SHEET_ID" "${TAB}!A2:AF5000" | python "$SCRIPT_DIR/duplicate_scan.py"
