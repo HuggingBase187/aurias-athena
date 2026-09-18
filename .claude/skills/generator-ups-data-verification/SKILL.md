@@ -53,6 +53,10 @@ For each batch, compute:
 
 Write one row per batch to the **Verification Log** tab on the master sheet (`1wf1vhj4_jvufGxpAO_3QAszTL9nSG8w6q1iVjp65-c8`) via `sheets_verifier.sh log` against `Verification Log!A:J`. Columns, in order: Date, Batch (companies checked), Row Range, Non-blank Fields Checked, Fields With Errors, Accuracy %, Error Details (a short semicolon-separated list — company, field, what's wrong), Blanks Confirmed Correct, Blanks Flagged as Missed, Verified By (write "generator-ups-data-verification" here).
 
+## 95% is the accuracy floor (Daniel, 2026-09-18)
+
+Below 95% on any batch isn't just a number to log and move past — it's a real quality problem that needs surfacing to Athena/Daniel immediately, in the same report that carries the score, not left to surface on its own at the next weekly rollup. State plainly when a batch misses the floor: which fields, how far below 95%, and whether the errors look like one-off mistakes or a pattern (e.g. concentrated in one field type, or in one specific batch condition like a trial batch size). This floor is also the concrete decision criterion for any standing process question that touches accuracy — e.g. the 2026-09-18 batch-size trial (SKILL.md of `generator-ups-data-enrichment`, "3 concurrent batches of 8") is explicitly judged against it: a trial batch scoring below 95% is a clear revert signal, not a borderline call needing more data points.
+
 ## Weekly reporting
 
 A separate automated step (not this Skill's job to trigger itself) reads the Verification Log every Monday and produces a chart + summary in the Athena Reports Drive folder, tracking Accuracy % over time. This Skill's only responsibility is making sure every batch produces one clean, correctly-scored log row — the weekly rollup depends entirely on that log being complete and consistent.
