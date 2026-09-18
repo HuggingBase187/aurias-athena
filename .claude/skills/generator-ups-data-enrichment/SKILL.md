@@ -31,7 +31,21 @@ Only these 7 categories: UPS, critical power services, backup generators, transf
 
 **Added 2026-09-18, needed once batches started running unattended overnight:** before doing anything else, read `Automation Status!A2:C2` on the master sheet. If Status (column B) is `FREE`, you're clear — write `IN_PROGRESS since <ISO timestamp>, rows <range>` into it immediately, before you start researching, so a scheduled task or another dispatch can't start the same batch in parallel. If Status already shows `IN_PROGRESS`, **stop — don't start a batch.** Report back that a batch is already running rather than duplicating work or racing another agent on the same rows. Set it back to `FREE` as the very last thing you do, after the batch is written, verified, and handed off — not before. If you ever hit an unrecoverable error mid-batch, still set it back to `FREE` before stopping, so the lock doesn't jam the pipeline for whoever runs next.
 
+**This single lock only covers one batch at a time — it does not apply when Athena has dispatched you as part of multi-batch mode.** If your dispatch prompt says you were assigned a fixed row list from the **Batch Ledger** tab, skip the `Automation Status!A2:C2` check entirely (it's reserved for the legacy single-batch path) and follow "1c. Multi-batch mode" below instead.
+
 Read the Market Map tab's Company Name and Website columns (via `sheets_api.sh read`) to find rows that have a name but are still missing the rest of the template — that's your queue. Don't re-enrich a row that's already been filled in and given a Screening Verdict; that's the verifier's job to check, not yours to redo.
+
+### 1c. Multi-batch mode — when several batches run at once
+
+**Added 2026-09-18, at Daniel's request, to speed up wall-clock throughput.** Athena (the orchestrating session, not a dispatched batch agent) acts as the sole coordinator here — she reads the unenriched-row queue once, splits it into N disjoint row lists (no overlap, ever), writes one claim row per batch to the **Batch Ledger** tab (Batch ID, Rows Assigned, Companies, Status, Started, Completed, Agent Task ID, Notes), and only then dispatches N `sourcing` agents in parallel, each with its exact row list baked into its prompt. A dispatched batch agent never picks its own rows in this mode — that's what keeps two concurrent agents from ever racing to claim the same row, without needing any distributed-locking scheme between them.
+
+If you're a batch agent running in this mode:
+- Work only the rows you were explicitly given. Don't call `next-batch` or otherwise pick additional rows — another concurrent agent may already be working adjacent ones.
+- **The row-identity-verification rule in step 1b matters even more here than in single-batch mode** — with several agents live at once, a concurrent structural edit (an insert/delete from Daniel or another agent) can shift rows for everyone simultaneously, not just for the one agent that happened to be running. Re-read the Company Name immediately before every write, every time, no exceptions.
+- When you finish (or hit an unrecoverable error), update your own row in the Batch Ledger tab — Status to `DONE` or `FAILED`, Completed timestamp, and a one-line Notes summary — instead of touching `Automation Status!A2:C2`. Only ever write your own ledger row; never touch another batch's row.
+- Still hand off to the `sourcing-verifier` subagent per step 9 below, same as single-batch mode.
+
+Daniel has agreed to pause his own manual row/column edits on the Market Map while multi-batch mode is actively running, specifically to keep the risk surface down — this doesn't remove the need for the identity-verification rule (another concurrent agent is still a source of structural change), but it does remove the most common trigger seen so far (a manual edit landing mid-batch).
 
 ### 0. Never delete a row unless it's a confirmed exact duplicate
 
