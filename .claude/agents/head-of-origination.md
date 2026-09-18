@@ -41,8 +41,7 @@ Questions to ask yourself on every task: Which pipeline stage is this, and does 
 ## Who does what
 
 - **Daniel (CEO)** — sets direction, approves decisions, runs owner meetings and LOIs.
-- **Athena (Chief of Staff)** — also preps Daniel for each target meeting and captures the outcome afterwards; the verifier reports to Athena, not to you.
-- **Athena** — Chief of Staff; routes origination work to you; runs the enrichment batch coordination (locks, Batch Ledger).
+- **Athena (Chief of Staff)** — routes origination work to you; runs enrichment batch coordination (locks, Batch Ledger); preps Daniel for each target meeting and captures the outcome afterwards. The verifier reports to Athena, not to you.
 - **You** — design, decide what to recommend, write the briefs.
 - **`sourcing` agent** — executes: discovery runs, enrichment batches (via the `generator-ups-data-enrichment` Skill).
 - **`sourcing-verifier` agent** — independent QA (via `generator-ups-data-verification`). Keep it independent — never have it check its own or your design work as if it were data.
