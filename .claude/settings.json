@@ -3,6 +3,7 @@
     "allow": [
       "Bash(bash .claude/skills/generator-ups-data-enrichment/scripts/sheets_api.sh read *)",
       "Bash(bash .claude/skills/generator-ups-data-enrichment/scripts/sheets_api.sh meta *)",
+      "Bash(bash .claude/skills/generator-ups-data-enrichment/scripts/sheets_api.sh next-batch *)",
       "Bash(bash .claude/skills/generator-ups-data-verification/scripts/sheets_verifier.sh read *)",
       "Bash(bash .claude/skills/generator-ups-data-verification/scripts/sheets_verifier.sh meta *)",
       "Bash(bash /c/Users/HP/.claude/credentials/sheets_auth.sh)",
@@ -22,20 +23,7 @@
       "mcp__Claude_Browser__tabs_context",
       "mcp__scheduled-tasks__list_scheduled_tasks",
       "mcp__claude-in-chrome__list_connected_browsers",
-      "mcp__Claude_Browser__find",
-      "WebSearch",
-      "WebFetch(domain:find-and-update.company-information.service.gov.uk)",
-      "WebFetch(domain:uk.linkedin.com)",
-      "WebFetch(domain:www.linkedin.com)",
-      "mcp__Claude_Browser__navigate",
-      "Bash(where.exe *)",
-      "Bash(unzip -l *)",
-      "Bash(unzip -Z1 *)",
-      "WebFetch(domain:open.endole.co.uk)",
-      "WebFetch(domain:www.wikidata.org)",
-      "WebFetch(domain:companycheck.co.uk)",
-      "WebFetch(domain:www.companiesintheuk.co.uk)",
-      "WebFetch(domain:s3.eu-west-2.amazonaws.com)"
+      "mcp__Claude_Browser__find"
     ]
   }
 }
