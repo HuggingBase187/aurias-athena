@@ -26,12 +26,14 @@ Current IDs for the sheets this skill works against. Google Docs/Sheets get recr
 - **Sharing is manual, not automatic.** The Drive connector's OAuth scope doesn't include permission-management, so attempts to share a file with the service account via the connector fail with a 403 even when Daniel has authorized it — confirmed 2026-09-17. Daniel has to add the service account as Editor himself, either per-file (Share button) or, more durably, at the folder level so anything created inside inherits access automatically.
 - **As of 2026-09-17, Daniel is sharing the whole "Aurias 2" Drive folder** with the service account as Editor, specifically so future sheets/docs created inside it don't need a manual per-file share. If a future write fails with a 403 permission error, the first thing to check is whether the target file actually lives inside that shared folder tree — if it doesn't, ask Daniel to share it (or move it).
 
-## Near Miss Rules — the live, authoritative source for near-miss bands (added 2026-09-18)
+## Rules that live in Google Docs Daniel edits directly
 
-**Google Doc: "Near Miss Rules"** (`1C6BGckrgU-5j7MPfMriWdw_3pPuqqAPg3Q8oYsc9_Wg`, in the "Market Mapping Templates and guides for Athena" Drive folder). Daniel edits the near-miss band numbers (headcount ~20-29, PBT ~£700k-£1m, Revenue ~£8m-£10m) and the governing philosophy directly in this document, not in this repo — **read it fresh before any near-miss-related work** (enrichment's PBT-near-miss check, or a `generator-ups-near-misses-update` sweep) rather than trusting the numbers already written into `data-template.md`, which mirror this doc but can drift if it's changed and this file isn't updated to match. If the two ever disagree, the Google Doc wins.
+Read these fresh on every run — they are the source of truth, not any copy in this repo.
+
+- **Scope & Search Vocabulary** (`1VcU78QCMR0Az9N-l-mVidFe5Qsu6ZvoD-xB6RzD9ScQ`): Section 0 = the single list of in-scope hardware and services; Section 1 = search keywords; Section 2 = services vocabulary for the Services Offered column.
+- **Near Miss Rules** (`1C6BGckrgU-5j7MPfMriWdw_3pPuqqAPg3Q8oYsc9_Wg`): near-miss bands and where each near miss goes.
 
 ## Related docs (context, not written to by this skill)
 
-- Services Vocabulary & Search Keywords doc: `1VcU78QCMR0Az9N-l-mVidFe5Qsu6ZvoD-xB6RzD9ScQ` — Section 2 has the real services vocabulary used to fill the Services Offered column.
 - Power OEM database: `1yGu0zjSbpqmb1ysvjsSvL8CdbDtyMz7GfBQe2X4MTRA` — useful for recognizing OEM names when filling Key OEM Partnerships.
 - 2023 Aurias 1 contact-enrichment precedent sheet: `1jScEMUN6XppcdBzwqyf4SbUUOQcQh4mujLvCCKHHOOs` — shows this exact discipline (PSC chase, blank-over-guess) working in practice.

@@ -6,7 +6,10 @@ This locates the anchor by its text at run time (never a hand-computed index),
 inserts everything in one go, then styles the inserted range.
 
 Usage: python docs_insert.py DOC_JSON_FILE 'ANCHOR TEXT' BLOCKS_JSON_FILE
-  ANCHOR TEXT: the full text of an existing paragraph (must match exactly one).
+  ANCHOR TEXT: the full text of an existing paragraph (must match exactly one),
+               or the literal __REWRITE__ to replace the whole body (same doc ID,
+               same link -- used when a doc should be rewritten cleanly rather
+               than patched).
   BLOCKS_JSON: [{"style": "HEADING_2" | "NORMAL_TEXT" | "BULLET", "text": "..."}]
     **double asterisks** in text mark bold spans; *single* marks italic.
 Prints the batchUpdate request body to stdout.
@@ -42,11 +45,18 @@ def main():
     anchor = sys.argv[2]
     blocks = json.load(open(sys.argv[3], encoding="utf-8"))
 
-    matches = [el for el in doc["body"]["content"]
-               if "paragraph" in el and para_text(el["paragraph"]) == anchor]
-    if len(matches) != 1:
-        sys.exit(f"Error: anchor matched {len(matches)} paragraphs (need exactly 1): {anchor!r}")
-    index = matches[0]["startIndex"]
+    pre = []
+    if anchor == "__REWRITE__":
+        body_end = doc["body"]["content"][-1]["endIndex"]
+        if body_end - 1 > 1:
+            pre.append({"deleteContentRange": {"range": {"startIndex": 1, "endIndex": body_end - 1}}})
+        index = 1
+    else:
+        matches = [el for el in doc["body"]["content"]
+                   if "paragraph" in el and para_text(el["paragraph"]) == anchor]
+        if len(matches) != 1:
+            sys.exit(f"Error: anchor matched {len(matches)} paragraphs (need exactly 1): {anchor!r}")
+        index = matches[0]["startIndex"]
 
     text, styles, cursor = "", [], index
     for b in blocks:
@@ -57,7 +67,10 @@ def main():
         cursor += length
     end = index + len(text)
 
-    reqs = [
+    if pre:
+        # Clear leftover bullets/heading style from the old first paragraph.
+        pre.append({"deleteParagraphBullets": {"range": {"startIndex": 1, "endIndex": 2}}})
+    reqs = pre + [
         {"insertText": {"location": {"index": index}, "text": text}},
         {"updateTextStyle": {"range": {"startIndex": index, "endIndex": end},
                              "textStyle": {"bold": False, "italic": False}, "fields": "bold,italic"}},

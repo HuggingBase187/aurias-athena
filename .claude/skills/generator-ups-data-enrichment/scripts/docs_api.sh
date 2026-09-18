@@ -17,6 +17,7 @@
 #   docs_api.sh insert_before DOC_ID 'ANCHOR PARAGRAPH TEXT' BLOCKS_JSON_FILE
 #                                            -- insert styled headings/paragraphs/bullets
 #                                               before an existing paragraph (see docs_insert.py)
+#   docs_api.sh rewrite DOC_ID BLOCKS_JSON_FILE -- replace the whole body cleanly, same doc ID/link
 #
 # `replace` is also the safe way to do a targeted insert: doc authors should
 # keep a stable marker line (e.g. "-- add new entries above this line --")
@@ -37,7 +38,7 @@ fi
 
 MODE="${1:-}"
 if [ -z "$MODE" ]; then
-  echo "Usage: $0 {get|text|append|replace|insert_before} ..." >&2
+  echo "Usage: $0 {get|text|append|replace|insert_before|rewrite} ..." >&2
   exit 1
 fi
 
@@ -135,8 +136,14 @@ print(json.dumps({'requests':[{'replaceAllText':{
     curl -s -X POST       -H "Authorization: Bearer $TOKEN"       -H "Content-Type: application/json"       --data-binary "@${BODY_FILE}"       "https://docs.googleapis.com/v1/documents/${DOC_ID}:batchUpdate"
     ;;
 
+  rewrite)
+    DOC_ID="${2:?Usage: $0 rewrite DOC_ID BLOCKS_JSON_FILE}"
+    BLOCKS_FILE="${3:?Usage: $0 rewrite DOC_ID BLOCKS_JSON_FILE}"
+    exec bash "$0" insert_before "$DOC_ID" "__REWRITE__" "$BLOCKS_FILE"
+    ;;
+
   *)
-    echo "Unknown mode: $MODE (use get, text, append, replace, or insert_before)" >&2
+    echo "Unknown mode: $MODE (use get, text, append, replace, insert_before, or rewrite)" >&2
     exit 1
     ;;
 esac

@@ -56,7 +56,7 @@ You may dispatch `sourcing` / `sourcing-verifier` for small scoped pilots or res
 
 **Discovery**
 - **Methodologies guide** — "Market Map List-Building Methodologies — Aurias 2" (Doc `1Kh8V4nqX0XSuJtmp5B263RpmlFtMaJuxXUVp-BDL2lY`). Seven channels: OEM dealer/partner directories · trade association directories · Google/Google Maps search · LinkedIn search + "People Also Viewed" · trade press/exhibitor lists · Lookalikes search (seeded from Qualified Leads) · Companies House name search. **Companies House SIC-code sweeps and paid classification platforms (Beauhurst, The Data City, DataGardener) are rejected by Daniel — don't reopen them.**
-- **Services Vocabulary & Search Keywords** (Doc `1VcU78QCMR0Az9N-l-mVidFe5Qsu6ZvoD-xB6RzD9ScQ`) — Section 1 = canonical search keywords (Product × Service, always long-tail); Section 2 = describing services. Stays a separate doc. Transformers have no keywords yet.
+- **Scope & Search Vocabulary** (Doc `1VcU78QCMR0Az9N-l-mVidFe5Qsu6ZvoD-xB6RzD9ScQ`) — Section 1 = canonical search keywords (Product × Service, always long-tail); Section 2 = describing services. Stays a separate doc. Transformers have no keywords yet.
 - **Power OEM database** (Doc `1yGu0zjSbpqmb1ysvjsSvL8CdbDtyMz7GfBQe2X4MTRA`).
 - **Discovery Staging sheet** (`1FLKzSDkpK2M9-nNaJ3CWfCdZ0ssErZXfj_E-ED6AXb0`) — all discovery writes here, never directly to the master.
 - **Discovery Skill — agreed design, NOT built. Do not build it without Daniel's explicit instruction.** Agreed design is in Athena's memory (`project_discovery_skill_design.md` in the Claude memory folder): deterministic promotion gate (source URL + Companies House API match + not a duplicate → "Ready"), fully automatic promotion to the master inside the enrichment coordinator's lock-free window, 50-row cap, promotion log, row-count reconciliation.
@@ -79,7 +79,7 @@ You may dispatch `sourcing` / `sourcing-verifier` for small scoped pilots or res
 ## Hard rules (inherited — not judgment calls)
 
 - **Zero hallucinated data in the master.** Leave blank rather than guess. Discovery goes through staging.
-- **Financial figures only from Companies House** (or a company press/IR release). No Power Ratio, ROCE or CAGR at the market-mapping stage.
+- **Only figures as filed** (Companies House accounts, or a company press/IR release). No calculated or derived metrics.
 - **Never delete rows** from a sourcing sheet except per `.claude/skills/generator-ups-data-enrichment/references/sheet-write-safety.md`.
 - **No write of any kind to the Market Map tab while a batch lock is held** (`Automation Status!A2:C2` doesn't read FREE, or any Batch Ledger row IN_PROGRESS). Same file, rule 5.
 - **LinkedIn: read-only research.** Never message, connect, post or comment on Daniel's account.
