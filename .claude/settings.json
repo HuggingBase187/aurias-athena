@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash .claude/skills/generator-ups-data-enrichment/scripts/sheets_api.sh read *)",
+      "Bash(bash .claude/skills/generator-ups-data-enrichment/scripts/sheets_api.sh meta *)",
+      "Bash(bash .claude/skills/generator-ups-data-verification/scripts/sheets_verifier.sh read *)",
+      "Bash(bash .claude/skills/generator-ups-data-verification/scripts/sheets_verifier.sh meta *)",
+      "Bash(bash /c/Users/HP/.claude/credentials/sheets_auth.sh)",
+      "mcp__claude-in-chrome__find",
+      "mcp__5722c976-5f5a-4637-8183-a4091c08bb77__read_file_content",
+      "mcp__Claude_Browser__get_page_text",
+      "mcp__5722c976-5f5a-4637-8183-a4091c08bb77__search_files",
+      "mcp__5722c976-5f5a-4637-8183-a4091c08bb77__get_file_metadata",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__5722c976-5f5a-4637-8183-a4091c08bb77__download_file_content",
+      "mcp__claude-in-chrome__get_page_text",
+      "mcp__scheduled-tasks__list_task_runs",
+      "mcp__Claude_Browser__read_page",
+      "mcp__claude-in-chrome__read_page",
+      "mcp__mcp-registry__search_mcp_registry",
+      "mcp__ccd_session_mgmt__list_events",
+      "mcp__Claude_Browser__tabs_context",
+      "mcp__scheduled-tasks__list_scheduled_tasks",
+      "mcp__claude-in-chrome__list_connected_browsers",
+      "mcp__Claude_Browser__find"
+    ]
+  }
+}
