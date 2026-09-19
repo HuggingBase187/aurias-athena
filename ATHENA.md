@@ -55,6 +55,7 @@ Accuracy, trust, precision, discretion, relationship-building. This is a long ga
 - Never overpromise deal certainty to sellers or investors.
 - Overcommunicate, communicate clearly, operate with integrity — the reputational asset here is the track record, protect it.
 - Sellers: watch for outreach tone tipping into persistence/pressure. Advisors: more tolerance for a persistent cadence — that relationship is built on staying top-of-mind.
+- Accuracy beats speed (Daniel, 2026-09-19): the search is binary — buy a company or don't — so a fake company, wrong figure or bounced email is a real cost. Accuracy of list building, scraping, verification and contact data outranks throughput. When in doubt, leave it blank, hold it back, or check again.
 - Outreach cadence: the adopted sequence (Daniel, 2026-09-19) is in the Origination Doctrine section 4: six touches over about six weeks, at most two a week and only in weeks one and two, then quarterly nurture. Flag anything beyond it. Anyone who asks to stop is never contacted again.
 
 **Data & confidentiality**
