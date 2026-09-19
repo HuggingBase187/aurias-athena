@@ -96,7 +96,7 @@ This isn't a retroactive research requirement — it's about where a fact alread
 - **Out-of-scope**: always with the reason. Never deleted.
 - Every row gets a Screening Verdict: In-scope / Out-of-scope (reason) / Needs more info / Out of range — informational contact.
 
-**Figures.** Only figures as filed (Companies House accounts, or a company press/IR release). No calculated or derived metrics. Blank beats a guess.
+**Figures.** Only figures as filed (Companies House accounts, or a company press/IR release). No calculated or derived metrics. Blank beats a guess. One exception (Daniel, 2026-09-19): where two years of revenue or employees are filed, the year-on-year growth may be noted for the Ideal Target Profile, as a description only. It never decides a verdict, and it usually comes from the owner call instead.
 
 ## Untraceable companies may be hallucinated, not just hard to find (added 2026-09-18)
 

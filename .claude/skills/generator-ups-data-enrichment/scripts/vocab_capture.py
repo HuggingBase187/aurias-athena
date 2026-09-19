@@ -4,8 +4,11 @@ Rule (Daniel, 2026-09-19): agents log every product, service or phrase they
 meet on a company website that isn't in the Scope & Search Vocabulary doc yet.
 Once a phrase has been seen at 3 different companies:
   - description (Section 2, services-offered wording) -> added to the doc directly;
-  - product (Section 1 Product List), service (Section 1 Services List) and
-    scope (a new category for Section 0) -> proposed to Daniel on the Tally tab.
+  - service (Section 1 Services List) -> added to the table directly, and a
+    research task is raised for Daniel (line "RESEARCH TASK: ..."), so a new
+    service never enters the search terms without him knowing;
+  - product (Section 1 Product List) and scope (a new category for Section 0)
+    -> proposed to Daniel on the Tally tab.
 When Daniel sets a proposal's Status to "Approved", `process` adds product and
 service items to their table (search terms then regenerate) and reports scope
 items for Athena to add to Section 0 by hand. "Rejected" phrases are never
@@ -185,6 +188,13 @@ def cmd_process(dry):
             if not dry:
                 add_description(g["phrase"])
             report.append(f"Added to Section 2: {g['phrase']} ({n} companies)")
+        elif kind == "service":
+            status = "Added automatically"
+            if not dry:
+                add_table_row(TABLE_LABEL["service"], g["phrase"])
+            report.append(f"Added to Services List: {g['phrase']} ({n} companies)")
+            report.append(f"RESEARCH TASK: research the new service \"{g['phrase']}\" and its market "
+                          f"(seen at {n} companies; now in the search terms)")
         else:
             status = "Pending"
             report.append(f"Proposed to Daniel ({kind}): {g['phrase']} ({n} companies)")

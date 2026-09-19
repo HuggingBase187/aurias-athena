@@ -1,6 +1,6 @@
 ---
 name: search-vocabulary-capture
-description: Logs new market vocabulary (product names, service-list items, services-offered wording, possible new scope categories) found on company websites during Aurias 2 enrichment or discovery, and turns phrases seen at 3+ companies into Scope & Search Vocabulary doc updates — Section 2 descriptions added directly, Product List / Services List / scope items proposed to Daniel. Use whenever an agent reads a company website and meets a term not already in the Scope & Search Vocabulary doc, or to process the Vocabulary Log.
+description: Logs new market vocabulary (product names, service-list items, services-offered wording, possible new scope categories) found on company websites during Aurias 2 enrichment or discovery, and turns phrases seen at 3+ companies into Scope & Search Vocabulary doc updates — Section 2 descriptions and Services List words added directly (with a research task for Daniel), Product List and scope items proposed to Daniel. Use whenever an agent reads a company website and meets a term not already in the Scope & Search Vocabulary doc, or to process the Vocabulary Log.
 ---
 
 # Search vocabulary capture — Aurias 2
@@ -13,10 +13,10 @@ The market's own words find more companies. Every agent that reads a company web
 |---|---|---|
 | `description` | Section 2, services-offered wording (e.g. "hybrid power hire") | Added to the doc automatically |
 | `product` | Section 1 Product List (hardware names — feeds search terms) | Proposed to Daniel |
-| `service` | Section 1 Services List (service words — feeds search terms) | Proposed to Daniel |
+| `service` | Section 1 Services List (service words — feeds search terms) | Added automatically, and a research task goes on Daniel's to-do list |
 | `scope` | A category not in Section 0 at all | Proposed to Daniel |
 
-Product and Services List items are proposed, not added, because each one multiplies into a new set of search terms (one per item in the other list).
+Product List items are proposed, not added, because a new product widens the hunt. New service words go straight in, but never silently: Daniel gets a task to research the service and its market (Daniel, 2026-09-19).
 
 ## How to log
 
@@ -33,8 +33,9 @@ Phrases already in the doc are skipped automatically. Log the phrase as the comp
 
 `python vocab_capture.py process` runs daily at 07:00 (scheduled task `regen-search-terms-daily`, just before the search terms regenerate). It:
 - adds Section 2 descriptions that reached 3 companies to the "Added from company websites" line;
-- puts product / service / scope items that reached 3 companies on the **Tally** tab of the Vocabulary Log as **Pending**;
-- applies Daniel's decisions: **Approved** product or service items are added to their table (search terms regenerate straight after); **Approved** scope items are reported for Athena to add to Section 0 by hand; **Rejected** items are never proposed again.
+- adds Services List words that reached 3 companies to the table and prints a `RESEARCH TASK:` line, which the daily task turns into a to-do for Daniel on the dashboard;
+- puts product and scope items that reached 3 companies on the **Tally** tab of the Vocabulary Log as **Pending**;
+- applies Daniel's decisions: **Approved** product items are added to the Product List (search terms regenerate straight after); **Approved** scope items are reported for Athena to add to Section 0 by hand; **Rejected** items are never proposed again.
 
 ## Where things are
 
@@ -43,4 +44,4 @@ Phrases already in the doc are skipped automatically. Log the phrase as the comp
 
 ## Never
 
-Edit Section 0 or either Section 1 table directly — those change only through Daniel's approval on the Tally tab. Log a phrase from anything but the company's own website or filed documents.
+Edit Section 0 or either Section 1 table directly — only the script changes them, under the rules above. Log a phrase from anything but the company's own website or filed documents.
